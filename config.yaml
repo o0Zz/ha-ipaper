@@ -1,0 +1,22 @@
+homeassistant:
+    token: 
+    
+server:
+    bind_addr: "0.0.0.0"
+    bind_port: 8081
+
+logger:
+  version: 1
+  disable_existing_loggers: False
+  formatters:
+    default:
+      format: '%(asctime)s %(module)26s: %(levelname)-8s %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      level: DEBUG
+      formatter: default
+      stream: ext://sys.stdout
+  root:
+    level: DEBUG
+    handlers: [ console, file ]
