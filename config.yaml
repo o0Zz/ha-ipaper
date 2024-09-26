@@ -1,6 +1,8 @@
-homeassistant:
-    token: 
-    
+general:
+    homeassistant_url:
+    homeassistant_token: 
+    html_template: "./html-template"
+
 server:
     bind_addr: "0.0.0.0"
     bind_port: 8081
@@ -19,4 +21,4 @@ logger:
       stream: ext://sys.stdout
   root:
     level: DEBUG
-    handlers: [ console, file ]
+    handlers: [ console ]

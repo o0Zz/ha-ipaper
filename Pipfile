@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 requests = ">=0.0.0"
+homeassistant_api = ">=0.0.0"
+flask = ">=0.0.0"
 
 [dev-packages]
 
