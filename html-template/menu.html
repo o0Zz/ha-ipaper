@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Improved Navigation Bar</title>
+    <style>
+        /* Styling for the navigation bar */
+        nav {
+            background-color: #333;
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Style for the individual navigation links */
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            border-radius: 5px;
+        }
+
+        /* Hover effect for the navigation links */
+        nav a:hover {
+            background-color: #575757;
+            color: #ffd700;
+        }
+
+        /* Adding active style for a better UX */
+        nav a.active {
+            background-color: #575757;
+            color: #ffd700;
+        }
+
+        .icon-menu {
+            filter: invert(1) sepia(0) saturate(0) hue-rotate(0) brightness(1) contrast(1);
+            width: 1.5em;
+            height: 1.5em;
+            vertical-align: middle; /* Aligns with text */
+            margin-right: 0.3em; /* Adds spacing between icon and text */
+        }
+
+    </style>
+</head>
+
+
+<nav>
+    <a href="?page=home"> <img src="svg/house.svg" class="icon-menu"> Home </a>
+    <a href="?page=lights"> <img src="svg/lightbulb.svg" class="icon-menu"> Light </a>
+    <a href="?page=climates"> <img src="svg/air-conditioner.svg" class="icon-menu"> Climate </a>
+    <a href="?page=sensors"> <img src="svg/temperature-half.svg" class="icon-menu"> Sensors </a>
+</nav>

@@ -14,7 +14,7 @@
                 "-config", "debug.yaml"
             ],
             "console": "integratedTerminal",
-            "justMyCode": true
+            "justMyCode": false
         }
     ]
 }

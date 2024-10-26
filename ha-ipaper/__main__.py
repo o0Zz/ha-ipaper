@@ -7,8 +7,8 @@ import logging.config
 import time
 import yaml
 import signal
-import homeassistant_api 
-from flask import Flask, render_template, send_from_directory, abort
+from homeassistant_api import Client
+from flask import Flask, redirect, render_template, request, send_from_directory, abort, url_for
 import time
 import datetime
 import httpserver
@@ -22,36 +22,43 @@ app = Flask(__name__)
 sRunning = True
 HTML_TEMPLATE_DIRECTORY = ""  # Update this path to your files directory
 
+def format_exception(e):
+    return f"Exception: {type(e).__name__}, Arguments: {e.args}"
+
+# -------------------------------------------------------------------
+
 #Handle
 @app.route('/')
 def index():
+    return redirect('index.html')
+
+# -------------------------------------------------------------------
+
+@app.route('/<path:filename>')
+def serve_file(filename):
+
+    # Ensure the requested file is within the specified directory
+    file_path = os.path.abspath(os.path.join(HTML_TEMPLATE_DIRECTORY, filename))
+
+    # Check if the file exists and is within the specified directory
+    if not os.path.isfile(file_path) or not os.path.commonpath([file_path, HTML_TEMPLATE_DIRECTORY]) == HTML_TEMPLATE_DIRECTORY:
+        abort(404)
+    
+    if not filename.endswith(".html"):
+        return send_from_directory(HTML_TEMPLATE_DIRECTORY, filename)
+    
     try:
         data = {
             "title": "Home Assistant Interactive ePaper Dashboard",
             "entities": "",
-            "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "page": request.args.get('page', 'home'),
         }
-        return render_template('index.html', **data)
+        
+        return render_template(filename, **data)
     except Exception as e:
         _LOGGER.exception("Error while rendering index page")
-        abort(500)
-
-@app.route('/<path:filename>')
-def serve_file(filename):
-    try:
-        filename = secure_filename(filename)
-        
-        # Ensure the requested file is within the specified directory
-        file_path = os.path.join(HTML_TEMPLATE_DIRECTORY, filename)
-
-        # Check if the file exists and is within the specified directory
-        if os.path.isfile(file_path) and os.path.commonpath([file_path, HTML_TEMPLATE_DIRECTORY]) == HTML_TEMPLATE_DIRECTORY:
-            return send_from_directory(HTML_TEMPLATE_DIRECTORY, filename)
-        else:
-            abort(404)
-    except Exception as e:
-        _LOGGER.exception("Error while serving file: %s" % (filename))
-        abort(500)
+        abort(500, description=format_exception(e))
 
 # -------------------------------------------------------------------
 
@@ -94,6 +101,26 @@ if __name__ == '__main__':
     
     server.start()
    
+
+    with Client(config['general']['homeassistant_url'], config['general']['homeassistant_token'] ) as client: 
+        entities = client.get_entities()
+        #response = client.trigger_service("weather", "get_forecasts", 
+        #                                  entity_id='weather.home', 
+        #                                  type = 'hourly', 
+        #                                  return_response=True)
+
+        #response = client.get_state('weather')
+        #state = client.get_state('weather.home')
+        #weather = entities['weather']
+        #_LOGGER.debug(entities['weather'])
+        #weatherhome = weather.entities['home']
+        #forecast = weatherhome.attributes.get('forecast', [])
+
+        covers = client.get_entities()['cover']
+        lights = client.get_entities()['light']
+        
+
+
     _LOGGER.info("Running ...")
     try:
         while sRunning:
