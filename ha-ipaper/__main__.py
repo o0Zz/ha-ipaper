@@ -47,10 +47,13 @@ def serve_file(filename):
     if not filename.endswith(".html"):
         return send_from_directory(HTML_TEMPLATE_DIRECTORY, filename)
     
+    with Client(config['general']['homeassistant_url'], config['general']['homeassistant_token'] ) as client: 
+        entities = client.get_entities()
+
     try:
         data = {
             "title": "Home Assistant Interactive ePaper Dashboard",
-            "entities": "",
+            "entities": entities,
             "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
             "page": request.args.get('page', 'home'),
         }
@@ -101,26 +104,6 @@ if __name__ == '__main__':
     
     server.start()
    
-
-    with Client(config['general']['homeassistant_url'], config['general']['homeassistant_token'] ) as client: 
-        entities = client.get_entities()
-        #response = client.trigger_service("weather", "get_forecasts", 
-        #                                  entity_id='weather.home', 
-        #                                  type = 'hourly', 
-        #                                  return_response=True)
-
-        #response = client.get_state('weather')
-        #state = client.get_state('weather.home')
-        #weather = entities['weather']
-        #_LOGGER.debug(entities['weather'])
-        #weatherhome = weather.entities['home']
-        #forecast = weatherhome.attributes.get('forecast', [])
-
-        covers = client.get_entities()['cover']
-        lights = client.get_entities()['light']
-        
-
-
     _LOGGER.info("Running ...")
     try:
         while sRunning:

@@ -1,43 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensor List</title>
-    <style>
-        
-        .sensor-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .sensor-item {
-            background-color: #fff;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-    </style>
-</head>
-<body>
-    <h1>Sensor List</h1>
-    <ul class="sensor-list">
-        <li class="sensor-item">
-            <strong>Name:</strong> Temperature Sensor<br>
-            <strong>Value:</strong> 23°C
-        </li>
-        <li class="sensor-item">
-            <strong>Name:</strong> Humidity Sensor<br>
-            <strong>Value:</strong> 60%
-        </li>
-        <li class="sensor-item">
-            <strong>Name:</strong> Pressure Sensor<br>
-            <strong>Value:</strong> 1013 hPa
-        </li>
-        <li class="sensor-item">
-            <strong>Name:</strong> Light Sensor<br>
-            <strong>Value:</strong> 800 lux
-        </li>
-    </ul>
-</body>
-</html>
+<style>
+    .sensor-list {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap; /* Allows items to wrap onto the next line */
+        gap: 10px; /* Adds spacing between items */
+        justify-content: center; /* Center-aligns items */
+    }
+
+    .sensor-item {
+        display: inline-block;
+        width: 129px;
+        height: 100px; /* Set a fixed height for uniform box sizes */
+        background-color: #fff;
+        padding: 15px;
+        margin: 5px;
+        border-radius: 5px;
+        text-align: center;
+        vertical-align: top;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .sensor-icon {
+        width: 1.5em;
+        height: 1.5em;
+        margin-right: 0.3em; /* Adds spacing to the right of the icon */
+    }
+
+    .sensor-state {
+        display: flex;
+        align-items: center; /* Centers the text vertically with the icon */
+        justify-content: center; /* Centers content within the container */
+        font-weight: bold;
+    }
+</style>
+
+<ul class="sensor-list">
+    {% for sensor_key, sensor in entities['sensor'].entities.items() %}
+        {% if sensor.state.attributes.device_class in ['temperature', 'humidity'] %}
+            <li class="sensor-item">
+                <div class="sensor-state">
+                    {% if sensor.state.attributes.device_class == 'temperature' %}
+                        <img src="svg/temperature-half.svg" class="sensor-icon">
+                    {% elif sensor.state.attributes.device_class == 'humidity' %}
+                        <img src="svg/droplet.svg" class="sensor-icon">
+                    {% elif sensor.state.attributes.device_class == 'power' %}
+                        <img src="svg/bolt.svg" class="sensor-icon">
+                    {% elif sensor.state.attributes.device_class == 'energy' %}
+                        <img src="svg/bolt.svg" class="sensor-icon">
+                    {% elif sensor.state.attributes.device_class == 'signal_strength' %}
+                        <img src="svg/signal.svg" class="sensor-icon">
+                    {% elif sensor.state.attributes.device_class == 'battery' %}
+                        <img src="svg/battery-full.svg" class="sensor-icon">
+                    {% endif %}
+                    <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
+                </div>
+                <br>
+                {{ sensor.state.attributes.friendly_name }}<br>
+            </li>
+        {% endif %}
+    {% endfor %}
+</ul>
