@@ -1,0 +1,98 @@
+<style>
+    .climate-list {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap; /* Allows items to wrap onto the next line */
+        gap: 10px; /* Adds spacing between items */
+        justify-content: center; /* Center-aligns items */
+    }
+
+    .climate-control {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 300px;
+    }
+    .temperature-controls {
+      display: table;
+      margin: 20px auto;
+    }
+    .temperature-controls td {
+      padding: 0 10px;
+    }
+    .control-button {
+      width: 30px;
+      cursor: pointer;
+    }
+    .temperature {
+      font-size: 2em;
+      min-width: 60px;
+    }
+    .mode-select {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+    .mode-button {
+      width: 40px;
+      opacity: 0.2;
+      cursor: pointer;
+      padding: 5px;
+    }
+
+    .mode-button.active {
+      opacity: 1;
+    }
+</style>
+
+<ul class="climate-list">
+    {% for key, climate in entities['climate'].entities.items() %}
+        <div class="climate-control">
+            <h2>{{ climate.state.attributes.friendly_name }}</h2>
+
+            <form method="POST" class="temperature-controls">
+                <input type="hidden" name="service" value="climate.set_temperature">
+                <input type="hidden" name="entity_id" value="climate.{{ key }}">
+
+                <table>
+                    <tr>
+                        <td>
+                            <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature - 1 }}" class="control-button">
+                                <img src="webfonts/regular.svg?id=minus" alt="Decrease">
+                            </button>
+                        </td>
+                        <td>
+                            <div id="temperature" class="temperature">{{ climate.state.attributes.temperature }} °C</div>
+                        </td>
+                        <td>
+                            <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature + 1 }}" class="control-button">
+                                <img src="webfonts/regular.svg?id=plus" alt="Increase">
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+
+            <form method="POST" class="mode-select">
+                <input type="hidden" name="service" value="climate.set_hvac_mode">
+                <input type="hidden" name="entity_id" value="climate.{{ key }}">
+                <button type="submit" name="hvac_mode" value="off" class="mode-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'off' %}active{% endif %}">
+                    <img src="webfonts/regular.svg?id=power-off" alt="Power Off">
+                </button>
+                <button type="submit" name="hvac_mode" value="cool" class="mode-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'cool' %}active{% endif %}">
+                    <img src="webfonts/regular.svg?id=snowflake" alt="Cool">
+                </button>
+                <button type="submit" name="hvac_mode" value="heat" class="mode-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'heat' %}active{% endif %}">
+                    <img src="webfonts/regular.svg?id=fire" alt="Heat">
+                </button>
+                <button type="submit" name="hvac_mode" value="auto" class="mode-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'auto' %}active{% endif %}">
+                    <img src="webfonts/regular.svg?id=rotate" alt="Auto">
+                </button>
+            </form>
+        </div>
+    {% endfor %}
+</ul>

@@ -41,17 +41,17 @@
             <li class="sensor-item">
                 <div class="sensor-state">
                     {% if sensor.state.attributes.device_class == 'temperature' %}
-                        <img src="svg/temperature-half.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=temperature-half" class="sensor-icon">
                     {% elif sensor.state.attributes.device_class == 'humidity' %}
-                        <img src="svg/droplet.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=droplet" class="sensor-icon">
                     {% elif sensor.state.attributes.device_class == 'power' %}
-                        <img src="svg/bolt.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="sensor-icon">
                     {% elif sensor.state.attributes.device_class == 'energy' %}
-                        <img src="svg/bolt.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="sensor-icon">
                     {% elif sensor.state.attributes.device_class == 'signal_strength' %}
-                        <img src="svg/signal.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=signal" class="sensor-icon">
                     {% elif sensor.state.attributes.device_class == 'battery' %}
-                        <img src="svg/battery-full.svg" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=battery-full" class="sensor-icon">
                     {% endif %}
                     <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
                 </div>
