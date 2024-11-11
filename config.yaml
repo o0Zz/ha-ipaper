@@ -24,6 +24,14 @@ menu:
       icon: "webfonts/regular.svg?id=temperature-half"
       components: ["components/sensors.html"]
 
+    - name: "Covers"
+      icon: "webfonts/regular.svg?id=shutters"
+      components: ["components/covers.html"]
+
+    - name: "Switches"
+      icon: "webfonts/regular.svg?id=toggle-on"
+      components: ["components/switches.html"]
+
 logger:
   version: 1
   disable_existing_loggers: False

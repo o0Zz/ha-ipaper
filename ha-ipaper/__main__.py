@@ -73,7 +73,7 @@ def serve_file(filename):
                 domain, function = service.split(".")
                 homeassistant_client.trigger_service(domain, function, **dict)
                
-            time.sleep(0.25) #workaround wait for HA to update the state
+            time.sleep(0.5) #FIXME: workaround wait for HA to update the state (Need to properly wait state change)
 
         # Check if the file exists and is within the specified directory
         if not os.path.isfile(file_path) or not os.path.commonpath([file_path, html_folder]) == html_folder:
