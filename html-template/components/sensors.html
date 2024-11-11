@@ -1,57 +1,20 @@
-<style>
-    .sensor-list {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap; /* Allows items to wrap onto the next line */
-        gap: 10px; /* Adds spacing between items */
-        justify-content: center; /* Center-aligns items */
-    }
-
-    .sensor-item {
-        display: inline-block;
-        width: 129px;
-        height: 100px; /* Set a fixed height for uniform box sizes */
-        background-color: #fff;
-        padding: 15px;
-        margin: 5px;
-        border-radius: 5px;
-        text-align: center;
-        vertical-align: top;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .sensor-icon {
-        width: 1.5em;
-        height: 1.5em;
-        margin-right: 0.3em; /* Adds spacing to the right of the icon */
-    }
-
-    .sensor-state {
-        display: flex;
-        align-items: center; /* Centers the text vertically with the icon */
-        justify-content: center; /* Centers content within the container */
-        font-weight: bold;
-    }
-</style>
-
-<ul class="sensor-list">
+<ul class="entry-list">
     {% for sensor_key, sensor in entities['sensor'].entities.items() %}
         {% if sensor.state.attributes.device_class in ['temperature', 'humidity'] %}
-            <li class="sensor-item">
-                <div class="sensor-state">
+            <li class="entry-item-small">
+                <div class="entry-state">
                     {% if sensor.state.attributes.device_class == 'temperature' %}
-                        <img src="webfonts/regular.svg?id=temperature-half" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=temperature-half" class="entry-icon">
                     {% elif sensor.state.attributes.device_class == 'humidity' %}
-                        <img src="webfonts/regular.svg?id=droplet" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=droplet" class="entry-icon">
                     {% elif sensor.state.attributes.device_class == 'power' %}
-                        <img src="webfonts/regular.svg?id=bolt" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon">
                     {% elif sensor.state.attributes.device_class == 'energy' %}
-                        <img src="webfonts/regular.svg?id=bolt" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon">
                     {% elif sensor.state.attributes.device_class == 'signal_strength' %}
-                        <img src="webfonts/regular.svg?id=signal" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=signal" class="entry-icon">
                     {% elif sensor.state.attributes.device_class == 'battery' %}
-                        <img src="webfonts/regular.svg?id=battery-full" class="sensor-icon">
+                        <img src="webfonts/regular.svg?id=battery-full" class="entry-icon">
                     {% endif %}
                     <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
                 </div>

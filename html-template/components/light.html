@@ -1,54 +1,17 @@
 
-<style>
-    .light-list {
-        list-style-type: none;
-        padding: 0;
-        display: flex;
-        flex-wrap: wrap; /* Allows items to wrap onto the next line */
-        gap: 10px; /* Adds spacing between items */
-        justify-content: center; /* Center-aligns items */
-    }
-
-    .light-item {
-        display: inline-block;
-        width: 129px;
-        height: 100px; /* Set a fixed height for uniform box sizes */
-        background-color: #fff;
-        padding: 15px;
-        margin: 5px;
-        border-radius: 5px;
-        text-align: center;
-        vertical-align: top;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    }
-
-    .light-icon {
-        width: 1.5em;
-        height: 1.5em;
-        margin-right: 0.3em; /* Adds spacing to the right of the icon */
-    }
-
-    .light-state {
-        display: flex;
-        align-items: center; /* Centers the text vertically with the icon */
-        justify-content: center; /* Centers content within the container */
-        font-weight: bold;
-    }
-</style>
-
-<ul class="light-list">
+<ul class="entry-list">
     {% for key, light in entities['light'].entities.items() %}
         <form method="POST" style="display: inline;">
-            <li class="light-item">
+            <li class="entry-item-small">
                 <input type="hidden" name="service" value="{{ 'light.turn_off' if light.state.state == 'on' else 'light.turn_on' }}">
                 <input type="hidden" name="entity_id" value="light.{{ key }}">
                 
                 <button type="submit" style="background: none; border: none; padding: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; text-align: inherit;">
                     
                     {% if light.state.state == 'on' %}
-                        <img src="webfonts/regular.svg?id=lightbulb-on" class="light-icon">
+                        <img src="webfonts/regular.svg?id=lightbulb-on" class="entry-icon-medium">
                     {% else %}
-                        <img src="webfonts/regular.svg?id=lightbulb" class="light-icon">
+                        <img src="webfonts/regular.svg?id=lightbulb" class="entry-icon-medium">
                     {% endif %}
                     <br><br>
                     {{ light.state.attributes.friendly_name }}<br>
