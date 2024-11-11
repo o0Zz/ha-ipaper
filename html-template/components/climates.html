@@ -2,16 +2,14 @@
     {% for key, climate in entities['climate'].entities.items() %}
         <div class="entry-item-medium">
             <h2>{{ climate.state.attributes.friendly_name }}</h2>
-
             <form method="POST" class="temperature-controls">
                 <input type="hidden" name="service" value="climate.set_temperature">
                 <input type="hidden" name="entity_id" value="climate.{{ key }}">
-
                 <table>
                     <tr>
                         <td>
                             <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature - 1 }}" class="entry-button active">
-                                <img src="webfonts/regular.svg?id=minus" alt="Decrease" class="entry-icon-medium">
+                                <img src="webfonts/regular.svg?id=minus" alt="Decrease" class="entry-icon-medium" style="padding: 0;">
                             </button>
                         </td>
                         <td>
@@ -19,13 +17,12 @@
                         </td>
                         <td>
                             <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature + 1 }}" class="entry-button active">
-                                <img src="webfonts/regular.svg?id=plus" alt="Increase" class="entry-icon-medium">
+                                <img src="webfonts/regular.svg?id=plus" alt="Increase" class="entry-icon-medium" style="padding: 0;">
                             </button>
                         </td>
                     </tr>
                 </table>
             </form>
-
             <form method="POST">
                 <input type="hidden" name="service" value="climate.set_hvac_mode">
                 <input type="hidden" name="entity_id" value="climate.{{ key }}">

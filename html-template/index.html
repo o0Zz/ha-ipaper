@@ -10,6 +10,11 @@
 </head>
 
 <body>
+	
+	{% if page == None %}
+		{% set page = menu[0].name %}
+	{% endif %}
+
     <nav>
 		{% for menu_entry in menu %}
 			<a href="?page={{ menu_entry.name }}" class="{{'active' if page == menu_entry.name else '' }}"> <img src="{{ menu_entry.icon }}" class="icon-menu"> {{ menu_entry.name }} </a>
@@ -23,11 +28,5 @@
 			{% endfor %}
 		{% endif %}
 	{% endfor %}
-
-	{% if page == None %}
-		{% for component in menu[0].components %}
-				{% include component %}
-			{% endfor %}
-	{% endif %}
 
 </body>

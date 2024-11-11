@@ -15,7 +15,6 @@ body {
 
 nav {
 	padding: 15px;
-	display: flex;
 	justify-content: center;
 }
 
@@ -23,8 +22,8 @@ nav {
 nav a {
 	color: black;
 	text-decoration: none;
-	margin: 0 10px;
-	display: flex;
+	margin: 0 2px;
+    padding: 10px; /* Increased padding for larger appearance */
 	align-items: center;
 	border-radius: 3px;
 }
@@ -35,6 +34,7 @@ nav a.active {
 	padding: 10px 15px; /* Increased padding for larger appearance */
 	border-radius: 5px; /* Larger border radius for emphasis */
 	font-size: 1.1em; /* Slightly larger font size */
+    font-weight: bold; /* Bold font weight for emphasis */
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for a raised effect */
 }
 
@@ -107,26 +107,27 @@ nav a.active {
 .entry-icon-small {
 	width: 1.5em;
 	height: 1.5em;
-	margin-right: 0.3em;
+    padding: 0.4em;
 }
 
 .entry-icon-medium {
 	width: 2.5em;
 	height: 2.5em;
-	margin-right: 0.3em;
+    padding: 0.5em;
 }
 
 .entry-icon-large {
 	width: 3.5em;
 	height: 3.5em;
-	margin-right: 0.3em;
+    padding: 0.6em;
 }
 
 .entry-state {
-	display: flex;
+	text-align: center;
 	line-height: 1.2em;
 	font-size: 1.2em;
-	align-items: center;
-	justify-content: center; /* Centers content within the container */
-	font-weight: bold;
+}
+
+.entry-state img {
+	vertical-align: middle; /* Aligns image with text */
 }
