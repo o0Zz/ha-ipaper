@@ -76,14 +76,11 @@ nav a.active {
 	opacity: 1;
 }
 
-/* Entries */
 .entry-list {
+    text-align: center;
 	list-style-type: none;
 	padding: 0;
-	display: flex;
-	flex-wrap: wrap; /* Allows items to wrap onto the next line */
-	gap: 10px; /* Adds spacing between items */
-	justify-content: center; /* Center-aligns items */
+	margin: 0;
 }
 
 .entry-item-medium,
@@ -120,8 +117,8 @@ nav a.active {
 }
 
 .entry-icon-large {
-	width: 4em;
-	height: 4em;
+	width: 3.5em;
+	height: 3.5em;
 	margin-right: 0.3em;
 }
 
