@@ -4,17 +4,17 @@
             <li class="entry-item-small">
                 <div class="entry-state">
                     {% if sensor.state.attributes.device_class == 'temperature' %}
-                        <img src="webfonts/regular.svg?id=temperature-half" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=temperature-half" class="entry-icon-small">
                     {% elif sensor.state.attributes.device_class == 'humidity' %}
-                        <img src="webfonts/regular.svg?id=droplet" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=droplet" class="entry-icon-small">
                     {% elif sensor.state.attributes.device_class == 'power' %}
-                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon-small">
                     {% elif sensor.state.attributes.device_class == 'energy' %}
-                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=bolt" class="entry-icon-small">
                     {% elif sensor.state.attributes.device_class == 'signal_strength' %}
-                        <img src="webfonts/regular.svg?id=signal" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=signal" class="entry-icon-small">
                     {% elif sensor.state.attributes.device_class == 'battery' %}
-                        <img src="webfonts/regular.svg?id=battery-full" class="entry-icon">
+                        <img src="webfonts/regular.svg?id=battery-full" class="entry-icon-small">
                     {% endif %}
                     <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
                 </div>

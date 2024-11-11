@@ -1,3 +1,54 @@
+/* *****************************************
+					BODY 
+***************************************** */
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f0f0f0;
+	margin: 0;
+	padding: 20px;
+}
+
+/* *****************************************
+					MENU 
+***************************************** */
+
+nav {
+	padding: 15px;
+	display: flex;
+	justify-content: center;
+}
+
+/* Style for the individual navigation links */
+nav a {
+	color: black;
+	text-decoration: none;
+	margin: 0 10px;
+	display: flex;
+	align-items: center;
+	border-radius: 3px;
+}
+
+/* Adding active style for a better UX */
+nav a.active {
+	background-color: #dfdede;
+	padding: 10px 15px; /* Increased padding for larger appearance */
+	border-radius: 5px; /* Larger border radius for emphasis */
+	font-size: 1.1em; /* Slightly larger font size */
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow for a raised effect */
+}
+
+.icon-menu {
+	width: 1.5em;
+	height: 1.5em;
+	vertical-align: middle; /* Aligns with text */
+	margin-right: 0.3em; /* Adds spacing between icon and text */
+}
+
+/* *****************************************
+					ENTRY 
+***************************************** */
+
 .temperature-controls {
   display: table;
   margin: 20px auto;
@@ -13,19 +64,12 @@
 }
 
 .entry-button {
-	width: 2.5em;
-	height: 2.5em;
-	padding: 0.3em;
 	opacity: 0.2;
 	border: none; /* Removes the border */
 	background: none; /* Removes the background */
 	box-shadow: none; /* Removes any shadow */
-}
-
-.entry-button img {
-	width: 2em; /* Adjust as needed to fit within button */
-	height: 2em; /* Adjust as needed to fit within button */
-	display: block; /* Removes extra spacing around images */
+    cursor: pointer;
+    text-align: inherit;
 }
 
 .entry-button.active {
@@ -63,7 +107,7 @@
 	width: 300px;
 }
 
-.entry-icon {
+.entry-icon-small {
 	width: 1.5em;
 	height: 1.5em;
 	margin-right: 0.3em;
@@ -72,6 +116,12 @@
 .entry-icon-medium {
 	width: 2.5em;
 	height: 2.5em;
+	margin-right: 0.3em;
+}
+
+.entry-icon-large {
+	width: 4em;
+	height: 4em;
 	margin-right: 0.3em;
 }
 

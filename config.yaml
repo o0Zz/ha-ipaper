@@ -7,6 +7,23 @@ server:
     bind_addr: "0.0.0.0"
     bind_port: 8081
 
+menu:
+    - name: "Home"
+      icon: "webfonts/regular.svg?id=house"
+      components: ["components/forecast.html", "components/sensors.html"]
+
+    - name: "Lights"
+      icon: "webfonts/regular.svg?id=lightbulb"
+      components: ["components/lights.html"]
+
+    - name: "Climates"
+      icon: "webfonts/regular.svg?id=air-conditioner"
+      components: ["components/climates.html"]
+    
+    - name: "Sensors"
+      icon: "webfonts/regular.svg?id=temperature-half"
+      components: ["components/sensors.html"]
+
 logger:
   version: 1
   disable_existing_loggers: False

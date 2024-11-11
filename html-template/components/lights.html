@@ -5,13 +5,12 @@
             <li class="entry-item-small">
                 <input type="hidden" name="service" value="{{ 'light.turn_off' if light.state.state == 'on' else 'light.turn_on' }}">
                 <input type="hidden" name="entity_id" value="light.{{ key }}">
-                
-                <button type="submit" style="background: none; border: none; padding: 0; margin: 0; width: 100%; height: 100%; cursor: pointer; text-align: inherit;">
+                <button type="submit" class="entry-button active">
                     
                     {% if light.state.state == 'on' %}
-                        <img src="webfonts/regular.svg?id=lightbulb-on" class="entry-icon-medium">
+                        <img src="webfonts/regular.svg?id=lightbulb-on" class="entry-icon-large">
                     {% else %}
-                        <img src="webfonts/regular.svg?id=lightbulb" class="entry-icon-medium">
+                        <img src="webfonts/regular.svg?id=lightbulb" class="entry-icon-large">
                     {% endif %}
                     <br><br>
                     {{ light.state.attributes.friendly_name }}<br>

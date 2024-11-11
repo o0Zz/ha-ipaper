@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<meta http-equiv="refresh" content="60">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Homeassistant Interactive ePaper</title>
-<link rel="stylesheet" href="style.css">
-<style>
-body {
-	font-family: Arial, sans-serif;
-	background-color: #f0f0f0;
-	margin: 0;
-	padding: 20px;
-}
-</style>
+	<meta charset="UTF-8">
+	<meta http-equiv="refresh" content="60">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Homeassistant Interactive ePaper</title>
+	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    {% include 'menu.html' %}
-    {% include 'pages/' + page + '.html' %}
+    <nav>
+		{% for menu_entry in menu %}
+			<a href="?page={{ menu_entry.name }}" class="{{'active' if page == menu_entry.name else '' }}"> <img src="{{ menu_entry.icon }}" class="icon-menu"> {{ menu_entry.name }} </a>
+		{% endfor %}
+	</nav>
+
+	{% for menu_entry in menu %}
+		{% if page == menu_entry.name %}
+			{% for component in menu_entry.components %}
+				{% include component %}
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+
+	{% if page == None %}
+		{% for component in menu[0].components %}
+				{% include component %}
+			{% endfor %}
+	{% endif %}
+
 </body>

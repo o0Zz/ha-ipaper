@@ -11,7 +11,7 @@
                     <tr>
                         <td>
                             <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature - 1 }}" class="entry-button active">
-                                <img src="webfonts/regular.svg?id=minus" alt="Decrease">
+                                <img src="webfonts/regular.svg?id=minus" alt="Decrease" class="entry-icon-medium">
                             </button>
                         </td>
                         <td>
@@ -19,7 +19,7 @@
                         </td>
                         <td>
                             <button type="submit" name="temperature" value="{{ climate.state.attributes.temperature + 1 }}" class="entry-button active">
-                                <img src="webfonts/regular.svg?id=plus" alt="Increase">
+                                <img src="webfonts/regular.svg?id=plus" alt="Increase" class="entry-icon-medium">
                             </button>
                         </td>
                     </tr>
@@ -30,16 +30,16 @@
                 <input type="hidden" name="service" value="climate.set_hvac_mode">
                 <input type="hidden" name="entity_id" value="climate.{{ key }}">
                 <button type="submit" name="hvac_mode" value="off" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'off' %}active{% endif %}">
-                    <img src="webfonts/regular.svg?id=power-off" alt="Power Off">
+                    <img src="webfonts/regular.svg?id=power-off" alt="Power Off" class="entry-icon-medium">
                 </button>
                 <button type="submit" name="hvac_mode" value="cool" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'cool' %}active{% endif %}">
-                    <img src="webfonts/regular.svg?id=snowflake" alt="Cool">
+                    <img src="webfonts/regular.svg?id=snowflake" alt="Cool" class="entry-icon-medium">
                 </button>
                 <button type="submit" name="hvac_mode" value="heat" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'heat' %}active{% endif %}">
-                    <img src="webfonts/regular.svg?id=fire" alt="Heat">
+                    <img src="webfonts/regular.svg?id=fire" alt="Heat" class="entry-icon-medium">
                 </button>
                 <button type="submit" name="hvac_mode" value="auto" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'auto' %}active{% endif %}">
-                    <img src="webfonts/regular.svg?id=rotate" alt="Auto">
+                    <img src="webfonts/regular.svg?id=rotate" alt="Auto" class="entry-icon-medium">
                 </button>
             </form>
         </div>

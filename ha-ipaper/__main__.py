@@ -94,9 +94,10 @@ def serve_file(filename):
             try:
                 data = {
                     "title": "Home Assistant Interactive ePaper Dashboard",
+                    "menu": gConfig["menu"],
                     "entities": homeassistant_client.get_entities(),
                     "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "page": request.args.get('page', 'home'),
+                    "page": request.args.get('page', None),
                 }
                 
                 return render_template(filename, **data)
