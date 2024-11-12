@@ -54,17 +54,12 @@ nav a.active {
   margin: 20px auto;
 }
 
-.temperature-controls td {
-  padding: 0 10px;
-}
-
 .temperature {
   font-size: 2em;
-  min-width: 60px;
 }
 
 .entry-button {
-	opacity: 0.2;
+	opacity: 0.3;
 	border: none; /* Removes the border */
 	background: none; /* Removes the background */
 	box-shadow: none; /* Removes any shadow */
@@ -83,8 +78,9 @@ nav a.active {
 	margin: 0;
 }
 
+.entry-item-small,
 .entry-item-medium,
-.entry-item-small {
+.entry-item-large {
 	display: inline-block;
 	background-color: #fff;
 	padding: 15px;
@@ -102,6 +98,10 @@ nav a.active {
 
 .entry-item-medium {
 	width: 300px;
+}
+
+.entry-item-large {
+	width: 500px;
 }
 
 .entry-icon-small {

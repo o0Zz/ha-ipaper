@@ -8,7 +8,7 @@ import time
 import yaml
 import signal
 from homeassistant_api import Client
-from flask import Flask, redirect, render_template, request, send_from_directory, abort, url_for
+from flask import Flask, redirect, render_template, request, send_from_directory, abort
 import time
 import datetime
 import httpserver

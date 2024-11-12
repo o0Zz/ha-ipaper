@@ -1,7 +1,8 @@
 <ul class="entry-list">
     {% for key, switch in entities['switch'].entities.items() %}
-        <form method="POST" style="display: inline;">
-            <li class="entry-item-small">
+        
+        <li class="entry-item-small">
+            <form method="POST">
                 <input type="hidden" name="service" value="{{ 'switch.turn_off' if switch.state.state == 'on' else 'switch.turn_on' }}">
                 <input type="hidden" name="entity_id" value="switch.{{ key }}">
                 {% if switch.state.state == 'on' %}
@@ -15,7 +16,7 @@
                         {{ switch.state.attributes.friendly_name }}<br>
                     </button>
                 {% endif %}
-            </li>
-        </form>
+            </form>
+        </li>
     {% endfor %}
 </ul>

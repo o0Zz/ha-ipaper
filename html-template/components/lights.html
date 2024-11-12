@@ -1,7 +1,8 @@
+
 <ul class="entry-list">
     {% for key, light in entities['light'].entities.items() %}
-        <form method="POST" style="display: inline;">
-            <li class="entry-item-small">
+        <li class="entry-item-small">
+            <form method="POST">
                 <input type="hidden" name="service" value="{{ 'light.turn_off' if light.state.state == 'on' else 'light.turn_on' }}">
                 <input type="hidden" name="entity_id" value="light.{{ key }}">
                 <button type="submit" class="entry-button active">
@@ -14,7 +15,7 @@
                     <br>
                     {{ light.state.attributes.friendly_name }}<br>
                 </button>
-            </li>
-        </form>
+            </form>
+        </li>
     {% endfor %}
 </ul>
