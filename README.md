@@ -4,6 +4,8 @@
 
 HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables display and interaction with your smart home setup on e-paper devices.
 
+![image](https://github.com/user-attachments/assets/f6070f6c-4119-44f5-8aa8-a91b834e67d6)
+
 ## Key Differences from Other Home Assistant e-Paper Dashboards
 
 1. **No Coding Required:** Unlike other projects where you need to write HTML or additional code, HA-IPaper is designed to work out of the box. Configure it simply through a YAML file, without needing to handle complex customization.
