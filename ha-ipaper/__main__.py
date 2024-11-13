@@ -13,6 +13,7 @@ import time
 import datetime
 import httpserver
 import os
+from functools import lru_cache
 
 from xml.etree import ElementTree as ET
 
@@ -28,8 +29,11 @@ def format_exception(e):
 
 # -------------------------------------------------------------------
 
+@lru_cache(maxsize=64) # Cache the result of the last 64 calls (So at the end 64 icons will be cached which is enough, today we only use < 20)
 def extract_svg_symbol(svg_fullpath, symbol_id):
     root = ET.parse(svg_fullpath).getroot()
+
+    _LOGGER.debug(f"Extracting symbol {symbol_id} from {svg_fullpath}")
 
     namespace = {'svg': 'http://www.w3.org/2000/svg'}
     ET.register_namespace('', namespace['svg'])
@@ -56,6 +60,23 @@ def index():
 
 # -------------------------------------------------------------------
 
+@app.route('/<path:filename>.svg', methods=['GET'])
+def serve_svg(filename):
+    html_folder = os.path.abspath(gConfig["general"]["html_template"])
+    file_path = os.path.abspath(os.path.join(html_folder, f"{filename}.svg"))
+     
+    symbol_id = request.args.get('id', None)        
+    if symbol_id:
+        svg = extract_svg_symbol(file_path, request.args.get('id', None))
+        if svg is None:
+            abort(404, description="SVG symbol not found")
+
+        return svg.decode('utf-8'), 200, {'Content-Type': 'image/svg+xml'}
+
+    return send_from_directory(html_folder, filename)
+
+# -------------------------------------------------------------------
+
 @app.route('/<path:filename>', methods=['GET', 'POST'])
 def serve_file(filename):
         
@@ -79,17 +100,6 @@ def serve_file(filename):
         if not os.path.isfile(file_path) or not os.path.commonpath([file_path, html_folder]) == html_folder:
             abort(404)
 
-        if filename.endswith(".svg"):
-            id = request.args.get('id', None)
-            if id is None:
-                return send_from_directory(html_folder, filename)
-            
-            svg = extract_svg_symbol(file_path, request.args.get('id', None))
-            if svg is None:
-                abort(404)
-
-            return svg.decode('utf-8'), 200, {'Content-Type': 'image/svg+xml'}
-        
         if filename.endswith(".html"):
             try:
                 data = {
@@ -112,6 +122,7 @@ def serve_file(filename):
 def exit_signal_handler(signal, frame):
     global gRunning
     gRunning = False
+    _LOGGER.info("Signal received, shutting down...")
 
 # -------------------------------------------------
 
@@ -151,14 +162,9 @@ def main():
     _LOGGER.info("Running ...")
     try:
         while gRunning:
-            signal.pause()
-    except AttributeError:
-        # signal.pause() is missing for Windows; wait 100ms and loop instead
-        while gRunning:
-            try:
-                time.sleep(0.1)
-            except KeyboardInterrupt:
-                pass
+            time.sleep(0.1)
+    except KeyboardInterrupt:
+        _LOGGER.info("Keyboard interrupt received, exiting...")
 
     _LOGGER.info("Stopping ...")    
     
