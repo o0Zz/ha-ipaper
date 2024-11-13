@@ -6,6 +6,7 @@ general:
 server:
     bind_addr: "0.0.0.0"
     bind_port: 8081
+    debug: False #Set to True to enable debug mode and avoid template caching
 
 menu:
     - name: "Home"

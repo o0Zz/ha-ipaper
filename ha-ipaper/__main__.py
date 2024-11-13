@@ -24,9 +24,6 @@ app = Flask(__name__)
 gConfig = None
 gRunning = True
 
-def format_exception(e):
-    return f"Exception: {type(e).__name__}, Arguments: {e.args}"
-
 # -------------------------------------------------------------------
 
 @lru_cache(maxsize=64) # Cache the result of the last 64 calls (So at the end 64 icons will be cached which is enough, today we only use < 20)
@@ -113,7 +110,7 @@ def serve_file(filename):
                 return render_template(filename, **data)
             except Exception as e:
                 _LOGGER.exception("Error while rendering index page")
-                abort(500, description=format_exception(e))
+                abort(500, description=f"Exception: {type(e).__name__}, Arguments: {e.args}")
 
         return send_from_directory(html_folder, filename)
     
@@ -146,7 +143,7 @@ def main():
     _LOGGER.info("Intializating ...")
 
     app.template_folder = os.path.abspath(gConfig["general"]["html_template"])
-    app.debug = True #Avoid template caching
+    app.debug = gConfig["server"]["debug"]
 
     _LOGGER.info("Starting ...")
 
