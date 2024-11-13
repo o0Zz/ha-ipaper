@@ -2,19 +2,21 @@
 
 **Home Assistant Interactive e-Paper Dashboard (For Kobo, Kindle, etc.)**
 
-HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables display and interaction with your smart home setup on e-paper devices.
+HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables display and interaction with your smart home setup on e-paper devices with a browser.
 
 ![image](https://github.com/user-attachments/assets/f6070f6c-4119-44f5-8aa8-a91b834e67d6)
 
 ## Key Differences from Other Home Assistant e-Paper Dashboards
 
-1. **No Coding Required:** Unlike other projects where you need to write HTML or additional code, HA-IPaper is designed to work out of the box. Configure it simply through a YAML file, without needing to handle complex customization.
+1. **Compatible with Built-in eReader Browser:** This project is designed to work with the limited browsers on e-paper eReaders. Simply prevent your eReader from entering deep sleep mode, and, if possible, enable fullscreen mode for an optimal experience. For Kobo devices, you can use NickelMenu to manage these settings directly. On Kindle, you may need to jailbreak the device to disable deep sleep and enable fullscreen mode in the browser.
 
-2. **Interactive:** This project allows full interaction with Home Assistant directly from your e-paper device—a feature few other projects provide.
+2. **No Coding Required:** Unlike other projects where you need to write HTML or additional code, HA-IPaper is designed to work out of the box. Configure it simply through a YAML file, without needing to handle complex customization.
 
-3. **Legacy Compatibility:** HA-IPaper avoids JavaScript and uses only basic CSS, ensuring compatibility with older e-paper browsers that do not support modern web standards. All rendering (including SVG icons) is handled server-side for seamless e-paper compatibility.
+3. **Interactive:** This project allows full interaction with Home Assistant directly from your e-reader — a feature few other projects provide.
 
-4. **Automatic adaptation to new entities**: HA-IPaper automatically integrates new entities added to your Home Assistant setup without requiring manual updates to the dashboard. This means that as you expand your smart home system, HA-IPaper will recognize and display new entities seamlessly, saving time and effort in managing and maintaining your e-paper dashboard.
+4. **Legacy Compatibility:** HA-IPaper avoids JavaScript and uses only basic CSS, ensuring compatibility with older e-reader browsers that do not support modern web standards. All rendering (including SVG icons) is handled server-side for seamless e-reader compatibility.
+
+5. **Automatic adaptation to new entities**: HA-IPaper automatically integrates new entities added to your Home Assistant setup without requiring manual updates to the dashboard. This means that as you expand your smart home system, HA-IPaper will recognize and display new entities seamlessly, saving time and effort in managing and maintaining your e-paper dashboard.
 
 ## Quick Start
 
