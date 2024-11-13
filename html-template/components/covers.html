@@ -1,33 +1,38 @@
 <ul class="entry-list">
     {% for key, cover in entities['cover'].entities.items() %}
-        <li class="entry-item-small">
-            <form method="POST">
-                <input type="hidden" name="service" value="cover.open_cover">
-                <input type="hidden" name="entity_id" value="cover.{{ key }}">
-                <button type="submit" class="entry-button active">
-                    <img src="webfonts/regular.svg?id=arrow-up" class="entry-icon-medium">
-                    <br>Open<br>
-                </button>
-            </form>
-
-            <form method="POST">
-                <input type="hidden" name="service" value="cover.stop_cover">
-                <input type="hidden" name="entity_id" value="cover.{{ key }}">
-                <button type="submit" class="entry-button active">
-                    <img src="webfonts/regular.svg?id=stop" class="entry-icon-medium">
-                    <br>Stop<br>
-                </button>
-            </form>
-
-            <form method="POST">
-                <input type="hidden" name="service" value="cover.close_cover">
-                <input type="hidden" name="entity_id" value="cover.{{ key }}">
-                <button type="submit" class="entry-button active">
-                    <img src="webfonts/regular.svg?id=arrow-down" class="entry-icon-medium">
-                    <br>Close<br>
-                </button>
-            </form>
-
+        <li class="entry-item-medium">
+            <table class="centered-table">
+                <tr>
+                    <td>  
+                        <form method="POST">
+                            <input type="hidden" name="service" value="cover.open_cover">
+                            <input type="hidden" name="entity_id" value="cover.{{ key }}">
+                            <button type="submit" class="entry-button active">
+                                <img src="webfonts/regular.svg?id=arrow-up" class="entry-icon-medium">
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="service" value="cover.stop_cover">
+                            <input type="hidden" name="entity_id" value="cover.{{ key }}">
+                            <button type="submit" class="entry-button active">
+                                <img src="webfonts/regular.svg?id=stop" class="entry-icon-medium">
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST">
+                            <input type="hidden" name="service" value="cover.close_cover">
+                            <input type="hidden" name="entity_id" value="cover.{{ key }}">
+                            <button type="submit" class="entry-button active">
+                                <img src="webfonts/regular.svg?id=arrow-down" class="entry-icon-medium">
+                            </button>
+                        </form>
+                    </td>
+                </tr>  
+            </table>
+ 
             <div>{{ cover.state.attributes.friendly_name }}</div>
         </li>
     {% endfor %}

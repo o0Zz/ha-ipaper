@@ -49,13 +49,13 @@ nav a.active {
 					ENTRY 
 ***************************************** */
 
-.temperature-controls {
-  display: table;
-  margin: 20px auto;
-}
-
 .temperature {
   font-size: 2em;
+}
+
+.centered-table {
+    margin: 0 auto; /* Centers the table within the list item */
+    display: inline-block; /* Keeps the table content centered and allows inline alignment */
 }
 
 .entry-button {
@@ -97,11 +97,11 @@ nav a.active {
 }
 
 .entry-item-medium {
-	width: 300px;
+	width: 200px;
 }
 
 .entry-item-large {
-	width: 500px;
+	width: 300px;
 }
 
 .entry-icon-small {
