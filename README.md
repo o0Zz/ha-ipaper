@@ -69,8 +69,8 @@ The interface includes a "ready-to-use" design. If customization is desired, you
 
 **Project Structure:**
 
-- index.html: The main entry point, loading CSS, menu, and pages.
-- components/: Contains reusable components for pages.
+- `index.html`: The main entry point, loading CSS, menu, and pages.
+- `components/*.html`: Contains reusable components for pages.
 
 #### Architecture Overview
 
@@ -98,7 +98,7 @@ Use the `entities` variable, which contains a snapshot of your Home Assistant’
 For interactions with your Home Assistant, create a POST form where inputs align with Home Assistant’s service API:
 
 Example:
-This example with set the climate my_climate_xxx to 10 degree.
+This example with set the climate `my_climate_xxx` to 10 degree.
 ```html
 <form method="POST"> 
     <input type="hidden" name="service" value="climate.set_temperature"> 
@@ -115,4 +115,4 @@ Consult Home Assistant documentation for available services:
 
 ### Project inspired by: 
 - [Tombo1337's hatki](https://github.com/tombo1337/hatki) 
-- [Viny182's KFloorP](https://github.com/viny182/KFloorP) ``
+- [Viny182's KFloorP](https://github.com/viny182/KFloorP)
