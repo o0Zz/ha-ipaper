@@ -4,11 +4,12 @@ RUN echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/so
 RUN apt-get update
 RUN pip install pipenv
 
-COPY ha-ipaper /ha-ipaper
-ADD Pipfile /ha-ipaper
-
+ADD Pipfile /ha-ipaper/Pipfile
 WORKDIR /ha-ipaper
 RUN pipenv install
+
+COPY ha-ipaper /ha-ipaper
+COPY html-template /html-template
 
 ENV PYTHONPATH="${PYTHONPATH}:/"
 CMD [ "pipenv", "run", "python", "-m", "ha-ipaper", "-config", "/config/config.yaml" ]

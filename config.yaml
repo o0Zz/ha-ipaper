@@ -1,7 +1,7 @@
 general:
     homeassistant_url:
     homeassistant_token: 
-    html_template: "./html-template"
+    html_template: "/config/html-template"
 
 server:
     bind_addr: "0.0.0.0"

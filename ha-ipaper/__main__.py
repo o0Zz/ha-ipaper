@@ -130,6 +130,7 @@ def main():
     
     args = parser.parse_args()
 
+    _LOGGER.info(f"Loading configuration... ({args.config})")
     gConfig = None
     try:
         with open(args.config, "r") as stream:
@@ -140,23 +141,21 @@ def main():
 
     logging.config.dictConfig(gConfig["logger"])
 
-    _LOGGER.info("Intializating ...")
-
     app.template_folder = os.path.abspath(gConfig["general"]["html_template"])
     app.debug = gConfig["server"]["debug"]
 
-    _LOGGER.info("Starting ...")
+    _LOGGER.info(f"Initializing server ... (HTML folder: '{app.template_folder}')")
 
     signal.signal(signal.SIGTERM, exit_signal_handler)
     signal.signal(signal.SIGINT, exit_signal_handler)
     
     server = httpserver.FlaskServer(app)
     
-    server.setup( gConfig["server"]["bind_addr"], gConfig["server"]["bind_port"])
+    server.setup(gConfig["server"]["bind_addr"], gConfig["server"]["bind_port"])
     
     server.start()
    
-    _LOGGER.info("Running ...")
+    _LOGGER.info(f'Initialization done ! Server is running {gConfig["server"]["bind_addr"]}:{gConfig["server"]["bind_port"]} ...')
     try:
         while gRunning:
             time.sleep(0.1)

@@ -20,12 +20,17 @@ HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables di
 
 ## Quick Start
 
-### From docker
+### Build
+```
+docker build . -t ha-ipaper:latest
+```
+
+### Run from docker
 ```bash
 docker run ...
 ```
 
-### From Pipenv
+### Run from Pipenv
 ```bash
 pipenv install
 pipenv run python -m ha-ipaper -config config.yaml
