@@ -1,0 +1,39 @@
+{% set today_weather = entities['weather_forecast'][0] %}
+    {% set weather_icons = {
+        'rainy': 'cloud-rain',
+        'sunny': 'sun',
+        'partlycloudy': 'sun-cloud',
+        'clear-night': 'moon',
+        'cloudy': 'cloud',
+        'fog': 'fog',
+        'hail': 'cloud-hail',
+        'lightning': 'cloud-lightning',
+        'lightning-rainy': 'cloud-lightning-rain',
+        'pouring': 'cloud-pouring',
+        'snowy': 'cloud-snow',
+        'snowy-rainy': 'cloud-snow-rain',
+        'windy': 'wind',
+        'windy-variant': 'wind-variant',
+        'exceptional': 'exclamation'
+} %}
+
+<div class="weather-display">
+    <!-- Today's weather -->
+
+    <div class="weather-today">
+        {% set today_icon = weather_icons.get(today_weather['condition'], 'default-icon') %}
+        <img src="webfonts/regular.svg?id={{ today_icon }}" class="weather-icon">
+        <div class="weather-temperature">{{ today_weather['temperature'] }}°</div>
+    </div>
+
+    <!-- Upcoming weather -->
+    <ul class="upcoming-weather">
+        {% for weather_forecast_entry in entities['weather_forecast'][1:4] %}
+            {% set icon_id = weather_icons.get(weather_forecast_entry['condition'], 'default-icon') %}
+            <li class="weather-item">
+                <img src="webfonts/regular.svg?id={{ icon_id }}" class="weather-icon-small">
+                <div class="temperature-small">{{ weather_forecast_entry['temperature'] }}°</div>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

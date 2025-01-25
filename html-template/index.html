@@ -22,7 +22,7 @@
 	</nav>
 
 	{% for menu_entry in menu %}
-		{% if page == menu_entry.name %}
+		{% if page|lower == menu_entry.name|lower %}
 			{% for component in menu_entry.components %}
 				{% include component %}
 			{% endfor %}

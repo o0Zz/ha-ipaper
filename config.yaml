@@ -45,6 +45,15 @@ logger:
       level: DEBUG
       formatter: default
       stream: ext://sys.stdout
+  loggers:
+    homeassistant_api:
+      level: INFO
+      handlers: [ console ]
+      propagate: no
+    websockets:
+      level: INFO
+      handlers: [ console ]
+      propagate: no
   root:
     level: DEBUG
     handlers: [ console ]

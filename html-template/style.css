@@ -46,6 +46,69 @@ nav a.active {
 }
 
 /* *****************************************
+					WEATHER 
+***************************************** */
+/* Container */
+.weather-display {
+    text-align: center;
+    font-family: Arial, sans-serif;
+}
+
+/* Today's Weather */
+.weather-today {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.weather-today-content {
+    display: inline-block;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.weather-icon {
+    display: inline-block;
+    width: 140px;
+    height: 140px;
+    vertical-align: middle;
+    margin-right: 10px; /* Space between icon and temperature */
+}
+
+.weather-temperature {
+    display: inline-block;
+    font-size: 5em;
+    font-weight: bold;
+    vertical-align: middle;
+}
+
+/* Upcoming Weather */
+.upcoming-weather {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    text-align: center;
+}
+
+.weather-item {
+    display: inline-block;
+    text-align: center;
+    margin: 0 5px;
+}
+
+.weather-icon-small {
+    display: block;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto;
+}
+
+.temperature-small {
+    font-size: 1em;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* *****************************************
 					ENTRY 
 ***************************************** */
 
