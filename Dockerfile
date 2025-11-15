@@ -1,6 +1,5 @@
-FROM python:3.10-slim-buster
+FROM python:3.11-slim-trixie
 
-RUN echo "deb http://deb.debian.org/debian buster-backports main" >> /etc/apt/sources.list
 RUN apt-get update
 RUN pip install pipenv
 
@@ -11,5 +10,5 @@ RUN pipenv install
 COPY ha-ipaper /ha-ipaper
 COPY html-template /html-template
 
-ENV PYTHONPATH="${PYTHONPATH}:/"
+ENV PYTHONPATH="/"
 CMD [ "pipenv", "run", "python", "-m", "ha-ipaper", "-config", "/config/config.yaml" ]
