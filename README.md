@@ -49,10 +49,11 @@ services:
         max-size: "10m"
 ```
 
-2. copy config.yaml to /data/ha-ipaper
+2. copy `config.yaml` and `html-template` to `/data/ha-ipaper`
 ```
 mkdir /data/ha-ipaper
-cp config.yaml /data/ha-ipaper
+cp config.yaml /data/ha-ipaper/
+cp -r html-template /data/ha-ipaper/
 ```
 
 3. Run it
