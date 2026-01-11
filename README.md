@@ -26,8 +26,38 @@ docker build . -t ha-ipaper:latest
 ```
 
 ### Run from docker
+
+1. Write a docker-compose.yaml file
+```yaml
+services:
+  ha-ipaper:
+    image: ha-ipaper:latest
+    container_name: ha-ipaper
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/London
+    volumes:
+      - /data/ha-ipaper:/config
+    ports:
+      - 8081:8081
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "3"
+        max-size: "10m"
+```
+
+2. copy config.yaml to /data/ha-ipaper
+```
+mkdir /data/ha-ipaper
+cp config.yaml /data/ha-ipaper
+```
+
+3. Run it
 ```bash
-docker run ...
+docker compose up
 ```
 
 ### Run from Pipenv
