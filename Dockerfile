@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Copy application files
 COPY pyproject.toml uv.lock ./
-COPY src/ha-ipaper ./ha-ipaper
+COPY src ./src
 COPY html-template ./html-template
 COPY config.yaml ./
 COPY entrypoint.sh ./
