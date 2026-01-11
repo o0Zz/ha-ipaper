@@ -8,7 +8,7 @@
             "module": "ha_ipaper",
             "cwd": "${workspaceFolder}",
             "args": [
-                "-config", "debug.yaml"
+                "-config", "config.yaml"
             ],
             "console": "integratedTerminal",
             "justMyCode": false

@@ -27,7 +27,7 @@ docker build . -t ha-ipaper:latest
 
 ### Run from docker
 
-1. Write a docker-compose.yaml file
+1. Write a docker-compose.yaml file and update environment variables
 ```yaml
 services:
   ha-ipaper:
@@ -37,6 +37,8 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/London
+      - HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123
+      - HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE
     volumes:
       - /data/ha-ipaper:/config
     ports:
@@ -49,22 +51,15 @@ services:
         max-size: "10m"
 ```
 
-2. copy `config.yaml` and `html-template` to `/data/ha-ipaper`
-```
-mkdir /data/ha-ipaper
-cp config.yaml /data/ha-ipaper/
-cp -r html-template /data/ha-ipaper/
-```
-
-3. Run it
+2. Run it
 ```bash
 docker compose up
 ```
 
-### Run from Pipenv
+### Run with UV (fast Python package manager)
 ```bash
-pipenv install
-pipenv run python -m ha-ipaper -config config.yaml
+uv sync
+uv run python -m ha_ipaper -config config.yaml
 ```
 
 ## Configuration

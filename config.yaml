@@ -1,7 +1,7 @@
 general:
     homeassistant_url: http://homeassistant.local:8123
     homeassistant_token: "YOUR_LONG_LIVED_ACCESS_TOKEN_HERE"
-    html_template: "/config/html-template"
+    html_template: "./html-template"
 
 server:
     bind_addr: "0.0.0.0"
@@ -33,7 +33,7 @@ menu:
       icon: "webfonts/regular.svg?id=toggle-on"
       components: ["components/switches.html"]
 
-logger:
+loggercfg:
   version: 1
   disable_existing_loggers: False
   formatters:

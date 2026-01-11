@@ -10,7 +10,7 @@ import time
 from functools import lru_cache
 from xml.etree import ElementTree as ET
 
-import yaml
+from dynaconf import Dynaconf, Validator
 from flask import (
     Flask,
     make_response,
@@ -184,33 +184,54 @@ def main():
     args = parser.parse_args()
 
     _LOGGER.info(f"Loading configuration... ({args.config})")
-
-    config = None
     try:
-        with open(args.config, "r") as stream:
-            config = yaml.safe_load(stream.read())
-        logging.config.dictConfig(config["logger"])
+        if os.path.isfile(args.config) is False:
+            raise FileNotFoundError(f"Configuration file not found: {args.config}")
+
+        config = Dynaconf(
+            settings_files=[args.config],
+            envvar_prefix="HA_IPAPER",
+            load_dotenv=True,
+            validators=[
+                Validator("general.homeassistant_url", must_exist=True),
+                Validator("general.homeassistant_token", must_exist=True),
+                Validator("general.html_template", must_exist=True),
+                Validator("server.bind_addr", must_exist=True),
+                Validator("server.bind_port", must_exist=True),
+                Validator("config.loggercfg", must_exist=True),
+                Validator("menu", must_exist=True),
+            ],
+        )
+        config.validators.validate()
     except Exception:
         _LOGGER.exception(f"Unable to load configuration file: {args.config}")
         sys.exit(1)
 
+    logging.config.dictConfig(config.loggercfg.to_dict())
+
     signal.signal(signal.SIGTERM, exit_signal_handler)
     signal.signal(signal.SIGINT, exit_signal_handler)
 
+    # Make html_template path absolute from config file if it's relative
+    if not os.path.isabs(config.general.html_template):
+        config.general.html_template = os.path.abspath(
+            os.path.join(os.path.dirname(args.config), config.general.html_template)
+        )
+
     web_server = WebServer(
-        config["general"]["html_template"],
-        config["general"]["homeassistant_url"],
-        config["general"]["homeassistant_token"],
-        config["menu"],
-        config["server"]["debug"],
+        config.general.html_template,
+        config.general.homeassistant_url,
+        config.general.homeassistant_token,
+        config.menu,
+        config.server.debug,
     )
 
     server = httpserver.FlaskServer(web_server.app)
-    server.setup(config["server"]["bind_addr"], config["server"]["bind_port"])
+    server.setup(config.server.bind_addr, config.server.bind_port)
     server.start()
 
     _LOGGER.info(
-        f"Initialization done! Server is running {config['server']['bind_addr']}:{config['server']['bind_port']} ..."
+        f"Initialization done! Server is running {config.server.bind_addr}:{config.server.bind_port} ..."
     )
 
     try:

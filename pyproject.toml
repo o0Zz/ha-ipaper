@@ -15,6 +15,7 @@ dependencies = [
   "PyYAML",
   "homeassistant_api",
   "Flask",
+  "dynaconf>=3.2.12",
 ]
 
 [project.urls]
