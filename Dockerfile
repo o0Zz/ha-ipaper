@@ -20,8 +20,4 @@ COPY entrypoint.sh ./
 # Install dependencies and make entrypoint executable
 RUN uv sync --frozen && chmod +x entrypoint.sh
 
-# Create non-root user for security
-RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
-USER appuser
-
 ENTRYPOINT ["./entrypoint.sh"]

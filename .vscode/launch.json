@@ -5,7 +5,7 @@
             "name": "ha-ipaper debug",
             "type": "python",
             "request": "launch",
-            "program": "src/ha-ipaper/__main__.py",
+            "program": "src/ha_ipaper/__main__.py",
             "cwd": "${workspaceFolder}",
             "args": [
                 "-config", "debug.yaml"
