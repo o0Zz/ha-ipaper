@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ha-ipaper"
+version = "1.0.0"
+description = "Home Assistant Interactive e-Paper Dashboard (For Kobo, Kindle, etc...)"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+keywords = ["home-assistant", "epaper", "dashboard"]
+
+dependencies = [
+  "PyYAML",
+  "homeassistant_api",
+  "Flask",
+]
+
+[project.urls]
+Home = "https://github.com/"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["ha_ipaper*"]
+
+[project.scripts]
+ha-ipaper = "ha_ipaper.__main__:main"
