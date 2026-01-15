@@ -9,7 +9,6 @@ WORKDIR /app
 # Copy application files
 COPY pyproject.toml uv.lock ./
 COPY src ./src
-COPY html-template ./html-template
 COPY config.yaml ./
 COPY docker/entrypoint.sh ./
 

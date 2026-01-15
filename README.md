@@ -70,6 +70,26 @@ menu:
 ```
 
 ## Customization
+### Template Override
+
+You can customize templates without modifying the original application files by using multiple template folders. The first folder in the list has the highest priority.
+
+1. Create a custom template folder (e.g., `./my-templates`)
+2. Add it to your `config.yaml` before the default template:
+   ```yaml
+   general:
+     html_templates:
+       - "./my-templates"      # Your overrides (highest priority)
+   ```
+3. Create only the files you want to override, using the same folder structure:
+   ```
+   my-templates/
+   ├── components/
+   │   └── lights.html    # Overrides default lights component
+   └── style.css          # Overrides default stylesheet
+   ```
+
+The application checks folders in order and uses the first file found. This way, you only need to maintain the files you've customized.
 
 ### User Interface
 

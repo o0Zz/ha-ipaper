@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 
 @dataclass(frozen=True)
 class PagesConfig:
-    html_folder: str
+    html_folders: list[str]
     homeassistant_url: str
     homeassistant_token: str
     menu: dict

@@ -45,7 +45,7 @@ async def serve_svg(
     config: PagesConfig = Depends(get_pages_config),
 ):
     """Serve SVG files, optionally extracting a specific symbol."""
-    file_path = resolve_safe_path(config.html_folder, path, ".svg")
+    file_path = resolve_safe_path(config.html_folders, path, ".svg")
 
     if id:
         svg = extract_symbol(file_path, id)

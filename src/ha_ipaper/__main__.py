@@ -12,6 +12,7 @@ import uvicorn
 from dynaconf import Dynaconf, Validator
 from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
+from jinja2 import ChoiceLoader, FileSystemLoader
 
 from .core.config import PagesConfig
 from .core.dependencies import get_pages_config
@@ -23,7 +24,7 @@ _LOGGER = logging.getLogger(__name__)
 CONFIG_VALIDATORS = [
     Validator("general.homeassistant_url", must_exist=True),
     Validator("general.homeassistant_token", must_exist=True),
-    Validator("general.html_template", must_exist=True),
+    Validator("general.html_templates", must_exist=True),
     Validator("server.bind_addr", must_exist=True),
     Validator("server.bind_port", must_exist=True),
     Validator("loggercfg", must_exist=True),
@@ -37,7 +38,24 @@ def http_to_websocket_url(url: str) -> str:
     return f"{ws_url}/api/websocket"
 
 
-def create_app(html_folder: str, ha_url: str, ha_token: str, menu: dict) -> FastAPI:
+def create_templates(html_folders: list[str]) -> Jinja2Templates:
+    """Create Jinja2Templates with multiple folders (first = highest priority)."""
+    if len(html_folders) > 1:
+        loader = ChoiceLoader([FileSystemLoader(folder) for folder in html_folders])
+        templates = Jinja2Templates(directory=html_folders[-1])
+        templates.env.loader = loader
+    else:
+        templates = Jinja2Templates(directory=html_folders[0])
+
+    return templates
+
+
+def create_app(
+    html_folders: list[str],
+    ha_url: str,
+    ha_token: str,
+    menu: dict,
+) -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
         title="HA-IPaper",
@@ -50,11 +68,11 @@ def create_app(html_folder: str, ha_url: str, ha_token: str, menu: dict) -> Fast
 
     # Configure pages
     config = PagesConfig(
-        html_folder=os.path.abspath(html_folder),
+        html_folders=html_folders,
         homeassistant_url=ha_url,
         homeassistant_token=ha_token,
         menu=menu,
-        templates=Jinja2Templates(directory=os.path.abspath(html_folder)),
+        templates=create_templates(html_folders),
     )
     app.dependency_overrides[get_pages_config] = lambda: config
 
@@ -80,11 +98,11 @@ def load_config(config_path: str) -> Dynaconf:
     return config
 
 
-def resolve_html_template_path(config_path: str, html_template: str) -> str:
-    """Resolve HTML template path, making it absolute if relative."""
-    if Path(html_template).is_absolute():
-        return html_template
-    return str(Path(config_path).parent / html_template)
+def resolve_path(base_path: Path, path: str) -> str:
+    """Resolve a path relative to the config file, making it absolute."""
+    if Path(path).is_absolute():
+        return path
+    return str(base_path / path)
 
 
 def main() -> None:
@@ -109,17 +127,22 @@ def main() -> None:
     # Setup logging
     logging.config.dictConfig(config.loggercfg.to_dict())
 
-    # Resolve HTML template path
-    html_template = resolve_html_template_path(
-        args.config, config.general.html_template
+    # Build list of HTML template folders (first = highest priority)
+    html_folders = [
+        os.path.abspath(resolve_path(Path(args.config).parent, folder))
+        for folder in config.general.html_templates
+        if Path(resolve_path(Path(args.config).parent, folder)).is_dir()
+    ]
+    html_folders.append(
+        os.path.abspath(resolve_path(Path(__file__).parent, "html-template"))
     )
 
-    _LOGGER.info(f"Using HTML template folder: {html_template}")
+    _LOGGER.info(f"Using HTML template folders: {html_folders}")
     _LOGGER.info(f"Using Home Assistant URL: {config.general.homeassistant_url}")
 
     # Create FastAPI app
     app = create_app(
-        html_folder=html_template,
+        html_folders=html_folders,
         ha_url=config.general.homeassistant_url,
         ha_token=config.general.homeassistant_token,
         menu=config.menu,

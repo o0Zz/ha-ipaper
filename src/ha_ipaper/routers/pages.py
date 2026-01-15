@@ -31,7 +31,7 @@ async def serve_html(
     ha: HomeAssistantService = Depends(get_homeassistant),
 ):
     try:
-        resolve_safe_path(config.html_folder, filename, ".html")
+        resolve_safe_path(config.html_folders, filename, ".html")
         return config.templates.TemplateResponse(
             f"{filename}.html",
             {
@@ -82,4 +82,4 @@ async def serve_static(
     filename: str,
     config: PagesConfig = Depends(get_pages_config),
 ):
-    return FileResponse(resolve_safe_path(config.html_folder, filename))
+    return FileResponse(resolve_safe_path(config.html_folders, filename))
