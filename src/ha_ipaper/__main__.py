@@ -133,7 +133,7 @@ def main() -> None:
         app,
         host=config.server.bind_addr,
         port=config.server.bind_port,
-        log_level="info",
+        log_config=None,  # Use our logging configuration instead of uvicorn's default
     )
 
 

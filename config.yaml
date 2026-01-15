@@ -54,6 +54,14 @@ loggercfg:
       level: INFO
       handlers: [ console ]
       propagate: no
+    uvicorn.error:
+      level: INFO
+      handlers: []
+      propagate: yes
+    uvicorn.access:
+      level: INFO
+      handlers: []
+      propagate: yes
   root:
     level: DEBUG
     handlers: [ console ]
