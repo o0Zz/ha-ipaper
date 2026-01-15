@@ -16,7 +16,6 @@
         'windy-variant': 'wind-variant',
         'exceptional': 'exclamation'
 } %}
-
 <div class="weather-display">
     <!-- Today's weather -->
 
@@ -27,12 +26,18 @@
     </div>
 
     <!-- Upcoming weather -->
+    {% set months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'] %}
     <ul class="upcoming-weather">
-        {% for weather_forecast_entry in entities['weather_forecast'][1:4] %}
-            {% set icon_id = weather_icons.get(weather_forecast_entry['condition'], 'default-icon') %}
-            <li class="weather-item">
-                <img src="webfonts/regular.svg?id={{ icon_id }}" class="weather-icon-small">
-                <div class="temperature-small">{{ weather_forecast_entry['temperature'] }}°</div>
+        {% for entry in entities['weather_forecast'][1:4] %}
+            {% set icon_id = weather_icons.get(entry['condition'], 'default-icon') %}
+            {% set day = entry['datetime'][8:10]|int %}
+            {% set month = months[entry['datetime'][5:7]|int - 1] %}
+            <li class="weather-item forecast-compact">
+                <div class="icon-temp-row">
+                    <img src="webfonts/regular.svg?id={{ icon_id }}" class="weather-icon-small">
+                    <span class="temperature-small">{{ entry['temperature'] }}°</span>
+                </div>
+                <div class="forecast-date">{{ day }} {{ month }}</div>
             </li>
         {% endfor %}
     </ul>

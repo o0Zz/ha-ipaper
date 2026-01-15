@@ -1,3 +1,21 @@
+/* Compact forecast layout */
+.forecast-compact {
+    width: 80px;
+    padding: 0 2px;
+}
+
+.icon-temp-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.forecast-date {
+    font-size: 0.95em;
+    color: #555;
+    margin-top: 2px;
+}
 /* *****************************************
 					BODY 
 ***************************************** */
