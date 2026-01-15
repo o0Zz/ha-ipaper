@@ -20,39 +20,15 @@ HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables di
 
 ## Quick Start
 
-### Build
+### Build & run from docker
 ```
+cd ./docker
 docker build . -t ha-ipaper:latest
 ```
 
-### Run from docker
+Edit `docker/docker-compose.yml`
 
-1. Write a docker-compose.yaml file and update environment variables
-```yaml
-services:
-  ha-ipaper:
-    image: ha-ipaper:latest
-    container_name: ha-ipaper
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/London
-      - HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123
-      - HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE
-    volumes:
-      - /data/ha-ipaper:/config
-    ports:
-      - 8081:8081
-    restart: unless-stopped
-    logging:
-      driver: "json-file"
-      options:
-        max-file: "3"
-        max-size: "10m"
 ```
-
-2. Run it
-```bash
 docker compose up
 ```
 

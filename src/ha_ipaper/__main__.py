@@ -1,253 +1,137 @@
-#!/bin/python3
+#!/usr/bin/env python3
+"""HA-IPaper: Home Assistant Interactive ePaper Dashboard."""
+
 import argparse
-import datetime
 import logging
 import logging.config
 import os
-import signal
 import sys
-import time
-import traceback
-from functools import lru_cache
-from xml.etree import ElementTree as ET
+from pathlib import Path
 
+import uvicorn
 from dynaconf import Dynaconf, Validator
-from flask import (
-    Flask,
-    make_response,
-    redirect,
-    render_template,
-    request,
-    send_from_directory,
-)
-from homeassistant_api import WebsocketClient
+from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
 
-from . import httpserver
+from .core.config import PagesConfig
+from .core.dependencies import get_pages_config
+from .routers import pages, svg
 
 _LOGGER = logging.getLogger(__name__)
 
-
-class SVGHandler:
-    @staticmethod
-    @lru_cache(maxsize=64)
-    def extract_symbol(svg_fullpath, symbol_id):
-        root = ET.parse(svg_fullpath).getroot()
-        _LOGGER.debug(f"Extracting symbol {symbol_id} from {svg_fullpath}")
-
-        namespace = {"svg": "http://www.w3.org/2000/svg"}
-        ET.register_namespace("", namespace["svg"])
-
-        symbol = root.find(f".//svg:symbol[@id='{symbol_id}']", namespaces=namespace)
-        if symbol is None:
-            return None
-
-        standalone_svg = ET.Element(
-            "svg", {"viewBox": symbol.get("viewBox", "0 0 100 100")}
-        )
-        for element in symbol:
-            standalone_svg.append(element)
-
-        return ET.tostring(standalone_svg, encoding="utf-8", xml_declaration=True)
+# Required configuration validators
+CONFIG_VALIDATORS = [
+    Validator("general.homeassistant_url", must_exist=True),
+    Validator("general.homeassistant_token", must_exist=True),
+    Validator("general.html_template", must_exist=True),
+    Validator("server.bind_addr", must_exist=True),
+    Validator("server.bind_port", must_exist=True),
+    Validator("loggercfg", must_exist=True),
+    Validator("menu", must_exist=True),
+]
 
 
-class WebServer:
-    def __init__(
-        self,
-        html_folder: str,
-        homeassistant_url: str,
-        homeassistant_token: str,
-        menu: dict,
-        debug: bool,
-    ):
-        self.app = Flask(__name__)
-        self.setup_routes()
-
-        self.html_folder = os.path.abspath(html_folder)
-        self.homeassistant_url = homeassistant_url
-        self.homeassistant_token = homeassistant_token
-        self.menu = menu
-
-        if self.homeassistant_url.startswith(
-            "http://"
-        ) or self.homeassistant_url.startswith("https://"):
-            self.homeassistant_url = self.homeassistant_url.replace(
-                "http://", "ws://"
-            ).replace("https://", "wss://")
-            self.homeassistant_url += "/api/websocket"
-
-        self.app.template_folder = self.html_folder
-        self.app.debug = debug
-
-    def abort(self, code, description=""):
-        _LOGGER.error(f"Aborting with code {code}: {description}")
-        response = make_response(
-            f'<html><head><meta http-equiv="refresh" content="60"></head><body><h1>Error {code}</h1><br>{description}</body></html>',
-            code,
-        )
-        response.headers["Content-Type"] = "text/html"
-        return response
-
-    def setup_routes(self):
-        self.app.route("/", methods=["GET"])(self.serve_index)
-        self.app.route("/<path:filename>.svg", methods=["GET"])(self.serve_svg)
-        self.app.route("/<path:filename>", methods=["GET", "POST"])(self.serve_file)
-
-    def serve_index(self):
-        return redirect("index.html")
-
-    def serve_svg(self, filename):
-        file_path = os.path.abspath(os.path.join(self.html_folder, f"{filename}.svg"))
-
-        symbol_id = request.args.get("id", None)
-        if symbol_id:
-            svg = SVGHandler.extract_symbol(file_path, request.args.get("id", None))
-            if svg is None:
-                return self.abort(404, description="SVG symbol not found")
-            return svg.decode("utf-8"), 200, {"Content-Type": "image/svg+xml"}
-
-        return send_from_directory(self.html_folder, filename)
-
-    def serve_file(self, filename):
-        try:
-            with WebsocketClient(
-                self.homeassistant_url, self.homeassistant_token
-            ) as homeassistant_client:
-                if request.method == "POST":
-                    service = request.form.get("service", None)
-                    if service is not None:
-                        dict = {
-                            key: value
-                            for key, value in request.form.items()
-                            if key != "service"
-                        }
-                        domain, function = service.split(".")
-
-                        with homeassistant_client.listen_events(
-                            "state_changed"
-                        ) as events:
-                            homeassistant_client.trigger_service(
-                                domain, function, **dict
-                            )
-                            for event in events:
-                                break
-
-                file_path = os.path.abspath(os.path.join(self.html_folder, filename))
-                if (
-                    not os.path.isfile(file_path)
-                    or not os.path.commonpath([file_path, self.html_folder])
-                    == self.html_folder
-                ):
-                    return self.abort(404)
-
-                if filename.endswith(".html"):
-                    entities = homeassistant_client.get_entities()
-                    entities["weather_forecast"] = (
-                        homeassistant_client.trigger_service_with_response(
-                            "weather",
-                            "get_forecasts",
-                            entity_id="weather.home",
-                            type="daily",
-                        )["weather.home"]["forecast"]
-                    )
-
-                    data = {
-                        "title": "Home Assistant Interactive ePaper Dashboard",
-                        "menu": self.menu,
-                        "entities": entities,
-                        "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "page": request.args.get("page", None),
-                    }
-                    _LOGGER.debug(f"Rendering {filename} with data: {data}")
-                    return render_template(filename, **data)
-
-                return send_from_directory(self.html_folder, filename)
-
-        except Exception as e:
-            _LOGGER.exception(f"Error while rendering {filename} {request.args}")
-            data = {
-                "title": f"Error while rendering {filename}",
-                "parameters": request.args.to_dict(),
-                "error_message": str(e),
-                "stacktrace": traceback.format_exc(),
-            }
-            return render_template("error.html", **data)
+def http_to_websocket_url(url: str) -> str:
+    """Convert HTTP URL to WebSocket URL for Home Assistant API."""
+    ws_url = url.replace("http://", "ws://").replace("https://", "wss://")
+    return f"{ws_url}/api/websocket"
 
 
-gRunning = True
-
-
-def exit_signal_handler(signal, frame):
-    global gRunning
-    gRunning = False
-    _LOGGER.info("Signal received, shutting down...")
-
-
-def main():
-    parser = argparse.ArgumentParser(
-        prog="HA-IPaper", description="Home assistant interactive ePaper Dashboard"
+def create_app(html_folder: str, ha_url: str, ha_token: str, menu: dict) -> FastAPI:
+    """Create and configure the FastAPI application."""
+    app = FastAPI(
+        title="HA-IPaper",
+        description="Home Assistant Interactive ePaper Dashboard",
     )
-    parser.add_argument("-config", type=str, help="Configuration file (yaml)")
+
+    # Convert to WebSocket URL if needed
+    if ha_url.startswith(("http://", "https://")):
+        ha_url = http_to_websocket_url(ha_url)
+
+    # Configure pages
+    config = PagesConfig(
+        html_folder=os.path.abspath(html_folder),
+        homeassistant_url=ha_url,
+        homeassistant_token=ha_token,
+        menu=menu,
+        templates=Jinja2Templates(directory=os.path.abspath(html_folder)),
+    )
+    app.dependency_overrides[get_pages_config] = lambda: config
+
+    # Include routers (SVG first to match .svg before generic path)
+    app.include_router(svg.router)
+    app.include_router(pages.router)
+
+    return app
+
+
+def load_config(config_path: str) -> Dynaconf:
+    """Load and validate configuration from YAML file."""
+    if not Path(config_path).is_file():
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+
+    config = Dynaconf(
+        settings_files=[config_path],
+        envvar_prefix="HA_IPAPER",
+        load_dotenv=True,
+        validators=CONFIG_VALIDATORS,
+    )
+    config.validators.validate()
+    return config
+
+
+def resolve_html_template_path(config_path: str, html_template: str) -> str:
+    """Resolve HTML template path, making it absolute if relative."""
+    if Path(html_template).is_absolute():
+        return html_template
+    return str(Path(config_path).parent / html_template)
+
+
+def main() -> None:
+    """Application entry point."""
+    parser = argparse.ArgumentParser(
+        prog="HA-IPaper",
+        description="Home Assistant Interactive ePaper Dashboard",
+    )
+    parser.add_argument(
+        "-config", type=str, required=True, help="Configuration file (YAML)"
+    )
     args = parser.parse_args()
 
-    _LOGGER.info(f"Loading configuration... ({args.config})")
+    # Load configuration
+    _LOGGER.info(f"Loading configuration from {args.config}")
     try:
-        if os.path.isfile(args.config) is False:
-            raise FileNotFoundError(f"Configuration file not found: {args.config}")
-
-        config = Dynaconf(
-            settings_files=[args.config],
-            envvar_prefix="HA_IPAPER",
-            load_dotenv=True,
-            validators=[
-                Validator("general.homeassistant_url", must_exist=True),
-                Validator("general.homeassistant_token", must_exist=True),
-                Validator("general.html_template", must_exist=True),
-                Validator("server.bind_addr", must_exist=True),
-                Validator("server.bind_port", must_exist=True),
-                Validator("loggercfg", must_exist=True),
-                Validator("menu", must_exist=True),
-            ],
-        )
-        config.validators.validate()
+        config = load_config(args.config)
     except Exception:
-        _LOGGER.exception(f"Unable to load configuration file: {args.config}")
+        _LOGGER.exception(f"Failed to load configuration: {args.config}")
         sys.exit(1)
 
+    # Setup logging
     logging.config.dictConfig(config.loggercfg.to_dict())
 
-    signal.signal(signal.SIGTERM, exit_signal_handler)
-    signal.signal(signal.SIGINT, exit_signal_handler)
-
-    # Make html_template path absolute from config file if it's relative
-    if not os.path.isabs(config.general.html_template):
-        config.general.html_template = os.path.abspath(
-            os.path.join(os.path.dirname(args.config), config.general.html_template)
-        )
-
-    web_server = WebServer(
-        config.general.html_template,
-        config.general.homeassistant_url,
-        config.general.homeassistant_token,
-        config.menu,
-        config.server.debug,
+    # Resolve HTML template path
+    html_template = resolve_html_template_path(
+        args.config, config.general.html_template
     )
 
-    server = httpserver.FlaskServer(web_server.app)
-    server.setup(config.server.bind_addr, config.server.bind_port)
-    server.start()
+    # Create FastAPI app
+    app = create_app(
+        html_folder=html_template,
+        ha_url=config.general.homeassistant_url,
+        ha_token=config.general.homeassistant_token,
+        menu=config.menu,
+    )
 
+    # Run server
     _LOGGER.info(
-        f"Initialization done! Server is running {config.server.bind_addr}:{config.server.bind_port} ..."
+        f"Starting server on {config.server.bind_addr}:{config.server.bind_port}"
     )
-
-    try:
-        while gRunning:
-            time.sleep(0.1)
-    except KeyboardInterrupt:
-        _LOGGER.info("Keyboard interrupt received, exiting...")
-
-    _LOGGER.info("Stopping ...")
-    server.stop()
+    uvicorn.run(
+        app,
+        host=config.server.bind_addr,
+        port=config.server.bind_port,
+        log_level="info",
+    )
 
 
 if __name__ == "__main__":

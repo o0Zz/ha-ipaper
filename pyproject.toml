@@ -14,8 +14,11 @@ keywords = ["home-assistant", "epaper", "dashboard"]
 dependencies = [
   "PyYAML",
   "homeassistant_api",
-  "Flask",
+  "fastapi",
+  "uvicorn[standard]",
+  "jinja2",
   "dynaconf>=3.2.12",
+  "python-multipart>=0.0.21",
 ]
 
 [project.urls]

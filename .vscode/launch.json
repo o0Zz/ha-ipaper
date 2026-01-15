@@ -3,7 +3,7 @@
     "configurations": [
         {
             "name": "ha-ipaper debug",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "ha_ipaper",
             "cwd": "${workspaceFolder}",
