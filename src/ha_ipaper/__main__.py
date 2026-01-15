@@ -7,6 +7,7 @@ import os
 import signal
 import sys
 import time
+import traceback
 from functools import lru_cache
 from xml.etree import ElementTree as ET
 
@@ -156,15 +157,20 @@ class WebServer:
                         "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
                         "page": request.args.get("page", None),
                     }
+                    _LOGGER.debug(f"Rendering {filename} with data: {data}")
                     return render_template(filename, **data)
 
                 return send_from_directory(self.html_folder, filename)
 
         except Exception as e:
-            _LOGGER.exception(f"Error while rendering {filename}")
-            return self.abort(
-                500, description=f"Exception: {type(e).__name__}, Arguments: {e.args}"
-            )
+            _LOGGER.exception(f"Error while rendering {filename} {request.args}")
+            data = {
+                "title": f"Error while rendering {filename}",
+                "parameters": request.args.to_dict(),
+                "error_message": str(e),
+                "stacktrace": traceback.format_exc(),
+            }
+            return render_template("error.html", **data)
 
 
 gRunning = True
@@ -198,7 +204,7 @@ def main():
                 Validator("general.html_template", must_exist=True),
                 Validator("server.bind_addr", must_exist=True),
                 Validator("server.bind_port", must_exist=True),
-                Validator("config.loggercfg", must_exist=True),
+                Validator("loggercfg", must_exist=True),
                 Validator("menu", must_exist=True),
             ],
         )
