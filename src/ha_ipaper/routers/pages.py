@@ -39,7 +39,7 @@ async def serve_html(
                 "title": "Home Assistant Interactive ePaper Dashboard",
                 "menu": config.menu,
                 "entities": ha.get_data(),
-                "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "date": datetime.now().strftime("%a %d %b %H:%M"),
                 "page": page,
             },
         )

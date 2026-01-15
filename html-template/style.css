@@ -45,6 +45,18 @@ nav a.active {
     margin-right: 0.3em;
 }
 
+.datetime {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 15px;
+    padding: 8px 12px;
+    background-color: #333;
+    color: white;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
 /* *****************************************
 					WEATHER 
 ***************************************** */

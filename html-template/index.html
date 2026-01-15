@@ -19,6 +19,7 @@
 		{% for menu_entry in menu %}
 			<a href="?page={{ menu_entry.name }}" class="{{'active' if page == menu_entry.name else '' }}"> <img src="{{ menu_entry.icon }}" class="icon-menu"> {{ menu_entry.name }} </a>
 		{% endfor %}
+		<span class="datetime">{{ date }}</span>
 	</nav>
 
 	{% for menu_entry in menu %}
