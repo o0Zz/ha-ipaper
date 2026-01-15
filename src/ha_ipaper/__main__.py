@@ -114,6 +114,9 @@ def main() -> None:
         args.config, config.general.html_template
     )
 
+    _LOGGER.info(f"Using HTML template folder: {html_template}")
+    _LOGGER.info(f"Using Home Assistant URL: {config.general.homeassistant_url}")
+
     # Create FastAPI app
     app = create_app(
         html_folder=html_template,
