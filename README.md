@@ -8,15 +8,13 @@ HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables di
 
 ## Key Differences from Other Home Assistant e-Paper Dashboards
 
-1. **Compatible with Built-in eReader Browser:** This project is designed to work with the limited browsers on e-paper eReaders. Simply prevent your eReader from entering deep sleep mode, and, if possible, enable fullscreen mode for an optimal experience. For Kobo devices, you can use NickelMenu to manage these settings directly. On Kindle, you may need to jailbreak the device to disable deep sleep and enable fullscreen mode in the browser.
+1. **Compatible with Built-in eReader Browser:** This project is designed to work with the limited browsers on e-paper eReaders. Simply prevent your eReader from entering deep sleep mode, and enable fullscreen mode for an optimal experience. For Kobo devices, you can use NickelMenu to manage these settings directly. On Kindle, you may need to jailbreak the device to disable deep sleep and enable fullscreen mode in the browser.
 
-2. **No Coding Required:** Unlike other projects where you need to write HTML or additional code, HA-IPaper is designed to work out of the box. Configure it simply through a YAML file, without needing to handle complex customization.
+2. **No Coding Required:** Unlike other projects where you need to write HTML or additional code, HA-IPaper is designed to work out of the box. Configure it simply through a YAML file or environment variables, without needing to handle complex customization.
 
-3. **Interactive:** This project allows full interaction with Home Assistant directly from your e-reader — a feature few other projects provide.
+3. **Interactive:** This project allows full interaction with Home Assistant directly from your e-reader.
 
-4. **Legacy Compatibility:** HA-IPaper avoids JavaScript and uses only basic CSS, ensuring compatibility with older e-reader browsers that do not support modern web standards. All rendering (including SVG icons) is handled server-side for seamless e-reader compatibility.
-
-5. **Automatic adaptation to new entities**: HA-IPaper automatically integrates new entities added to your Home Assistant setup without requiring manual updates to the dashboard. This means that as you expand your smart home system, HA-IPaper will recognize and display new entities seamlessly, saving time and effort in managing and maintaining your e-paper dashboard.
+4. **Automatic adaptation to new entities**: HA-IPaper automatically integrates new entities added to your Home Assistant setup without requiring manual updates to the dashboard. 
 
 ## Quick Start
 
@@ -31,7 +29,7 @@ Edit `docker/docker-compose.yml`
 docker compose up
 ```
 
-### Run with UV (fast Python package manager)
+### Run with UV
 ```bash
 uv sync
 uv run python -m ha_ipaper -config config.yaml
@@ -45,7 +43,7 @@ Edit config.yaml with your Home Assistant details:
 
 ```yaml
 general:
- homeassistant_url: YOUR_HOMEASSISTANT_URL
+ homeassistant_url: https://your_home_assistant.com
  homeassistant_token: YOUR_LONG_LIVED_ACCESS_TOKEN
 ```
 
@@ -57,7 +55,7 @@ general:
   - At the bottom, under "Long-lived access tokens," click "CREATE TOKEN."
   - Name the token (e.g., "HA-IPaper") and confirm.
 
-### Menu Configuration
+### Menu Configuration (Optional)
 
 Customize the pages you need by modifying the menu section in config.yaml to filter and arrange items for your dashboard.
 
@@ -69,33 +67,33 @@ menu:
       
 ```
 
-## Customization
+## Customization (Optional)
 ### Template Override
 
 You can customize templates without modifying the original application files by using multiple template folders. The first folder in the list has the highest priority.
 
-1. Create a custom template folder (e.g., `./my-templates`)
-2. Add it to your `config.yaml` before the default template:
+1. Create a custom template folder (e.g., `./html-templates`)
+2. Add it to your `config.yaml`:
    ```yaml
    general:
      html_templates:
-       - "./my-templates"      # Your overrides (highest priority)
+       - "./config/html-templates"
    ```
 3. Create only the files you want to override, using the same folder structure:
    ```
-   my-templates/
+   html-templates/
    ├── components/
    │   └── lights.html    # Overrides default lights component
    └── style.css          # Overrides default stylesheet
    ```
 
-The application checks folders in order and uses the first file found. This way, you only need to maintain the files you've customized.
+Instead of starting from scratch, it's advice to copy/paste the default html-templates provided here: https://github.com/o0Zz/ha-ipaper/tree/main/src/ha_ipaper/html-template
 
 ### User Interface
 
-The interface includes a "ready-to-use" design. If customization is desired, you may modify HTML files in the html-template directory. It’s recommended to only edit HTML files to ensure compatibility with future updates.
+The interface includes a "ready-to-use" design. If customization is desired, you may modify HTML files in the html-template directory (Created above).
 
-**Project Structure:**
+**html-template Structure:**
 
 - `index.html`: The main entry point, loading CSS, menu, and pages.
 - `components/*.html`: Contains reusable components for pages.
