@@ -73,15 +73,15 @@ nav a.active {
 
 .weather-icon {
     display: inline-block;
-    width: 140px;
-    height: 140px;
+    width: 120px;
+    height: 120px;
     vertical-align: middle;
     margin-right: 10px; /* Space between icon and temperature */
 }
 
 .weather-temperature {
     display: inline-block;
-    font-size: 5em;
+    font-size: 4em;
     font-weight: bold;
     vertical-align: middle;
 }
@@ -168,7 +168,7 @@ nav a.active {
 .entry-item-large {
 	display: inline-block;
 	background-color: #fff;
-	padding: 15px;
+	padding: 10px;
 	margin: 5px;
 	border-radius: 5px;
 	text-align: center;
@@ -192,7 +192,8 @@ nav a.active {
 .entry-icon-small {
 	width: 1.5em;
 	height: 1.5em;
-    padding: 0.4em;
+    padding-top: 0.2em;
+    padding-bottom: 0.4em;
 }
 
 .entry-icon-medium {
@@ -210,7 +211,7 @@ nav a.active {
 .entry-state {
 	text-align: center;
 	line-height: 1.2em;
-	font-size: 1.2em;
+	font-size: 1.5em;
 }
 
 .entry-state img {
