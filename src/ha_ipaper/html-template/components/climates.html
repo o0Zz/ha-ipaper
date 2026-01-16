@@ -27,16 +27,16 @@
                 <form method="POST">
                     <input type="hidden" name="service" value="climate.set_hvac_mode">
                     <input type="hidden" name="entity_id" value="climate.{{ key }}">
-                    <button type="submit" name="hvac_mode" value="off" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'off' %}active{% endif %}">
+                    <button type="submit" name="hvac_mode" value="off" class="entry-button {% if climate.state.state == 'off' %}active{% endif %}">
                         <img src="webfonts/regular.svg?id=power-off" alt="Power Off" class="entry-icon-medium">
                     </button>
-                    <button type="submit" name="hvac_mode" value="cool" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'cool' %}active{% endif %}">
+                    <button type="submit" name="hvac_mode" value="cool" class="entry-button {% if climate.state.state == 'cool' %}active{% endif %}">
                         <img src="webfonts/regular.svg?id=snowflake" alt="Cool" class="entry-icon-medium">
                     </button>
-                    <button type="submit" name="hvac_mode" value="heat" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'heat' %}active{% endif %}">
+                    <button type="submit" name="hvac_mode" value="heat" class="entry-button {% if climate.state.state == 'heat' %}active{% endif %}">
                         <img src="webfonts/regular.svg?id=fire" alt="Heat" class="entry-icon-medium">
                     </button>
-                    <button type="submit" name="hvac_mode" value="auto" class="entry-button {% if climate.state.attributes.V_HVAC_FLOW_STATE == 'auto' %}active{% endif %}">
+                    <button type="submit" name="hvac_mode" value="auto" class="entry-button {% if climate.state.state == 'auto' %}active{% endif %}">
                         <img src="webfonts/regular.svg?id=rotate" alt="Auto" class="entry-icon-medium">
                     </button>
                 </form>

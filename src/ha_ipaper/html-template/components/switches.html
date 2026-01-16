@@ -6,12 +6,12 @@
                 <input type="hidden" name="service" value="{{ 'switch.turn_off' if switch.state.state == 'on' else 'switch.turn_on' }}">
                 <input type="hidden" name="entity_id" value="switch.{{ key }}">
                 {% if switch.state.state == 'on' %}
-                    <button type="submit" class="entry-button">
+                    <button type="submit" class="entry-button active">
                         <img src="webfonts/regular.svg?id=toggle-large-on" class="entry-icon-large"><br>
                         {{ switch.state.attributes.friendly_name }}<br>
                     </button>
                 {% else %}
-                    <button type="submit" class="entry-button">
+                    <button type="submit" class="entry-button active">
                         <img src="webfonts/regular.svg?id=toggle-large-off" class="entry-icon-large"><br>
                         {{ switch.state.attributes.friendly_name }}<br>
                     </button>
