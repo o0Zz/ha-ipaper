@@ -144,16 +144,12 @@ nav a.active {
 }
 
 .entry-button {
-	opacity: 0.3;
+	opacity: 1;
 	border: none; /* Removes the border */
 	background: none; /* Removes the background */
 	box-shadow: none; /* Removes any shadow */
     cursor: pointer;
     text-align: inherit;
-}
-
-.entry-button.active {
-	opacity: 1;
 }
 
 .entry-list {
