@@ -9,4 +9,5 @@ class PagesConfig:
     homeassistant_url: str
     homeassistant_token: str
     menu: dict
+    timezone: str | None
     templates: Jinja2Templates

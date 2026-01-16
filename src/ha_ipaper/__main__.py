@@ -25,6 +25,7 @@ CONFIG_VALIDATORS = [
     Validator("general.homeassistant_url", must_exist=True),
     Validator("general.homeassistant_token", must_exist=True),
     Validator("general.html_templates", must_exist=True),
+    Validator("general.timezone", must_exist=True),
     Validator("server.bind_addr", must_exist=True),
     Validator("server.bind_port", must_exist=True),
     Validator("loggercfg", must_exist=True),
@@ -55,6 +56,7 @@ def create_app(
     ha_url: str,
     ha_token: str,
     menu: dict,
+    timezone: str | None = None,
 ) -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
@@ -72,6 +74,7 @@ def create_app(
         homeassistant_url=ha_url,
         homeassistant_token=ha_token,
         menu=menu,
+        timezone=timezone,
         templates=create_templates(html_folders),
     )
     app.dependency_overrides[get_pages_config] = lambda: config
@@ -146,6 +149,7 @@ def main() -> None:
         ha_url=config.general.homeassistant_url,
         ha_token=config.general.homeassistant_token,
         menu=config.menu,
+        timezone=config.general.timezone,
     )
 
     # Run server
