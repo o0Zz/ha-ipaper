@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homeassistant Interactive ePaper: Graph</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            background: #fff;
+        }
+
+        .top-bar {
+            text-align: right;
+            margin-bottom: 10px;
+        }
+
+        .close-button {
+            font-size: 1.5em;
+            text-decoration: none;
+            color: black;
+            padding: 5px;
+        }
+
+        .graph-container {
+            text-align: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="top-bar">
+        <a href="javascript:history.back()" class="close-button">✕</a>
+    </div>
+
+    <div class="graph-container">
+        <h3>{{ request.query_params.get("sensor") }}</h3>
+
+        <!-- Static image or server-rendered SVG -->
+        <img src="graph.svg?sensor={{ request.query_params.get("sensor") }}" alt="Graph" width="100%">
+    </div>
+
+</body>
+</html>

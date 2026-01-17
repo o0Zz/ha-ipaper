@@ -11,3 +11,4 @@ class PagesConfig:
     menu: dict
     timezone: str | None
     templates: Jinja2Templates
+    graph_days: int | None = None

@@ -217,3 +217,9 @@ nav a.active {
 .entry-state img {
 	vertical-align: middle; /* Aligns image with text */
 }
+
+.entry-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}

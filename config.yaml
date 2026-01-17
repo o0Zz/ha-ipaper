@@ -8,6 +8,9 @@ general:
     html_templates:
         - "/config/html-template"
 
+graph:
+    days: 5 # Default number of days to show in graphs
+
 server:
     bind_addr: "0.0.0.0"
     bind_port: 8081

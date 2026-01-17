@@ -2,21 +2,24 @@
     {% for sensor_key, sensor in entities['sensor'].entities.items() %}
         {% if sensor.state.attributes.device_class in ['temperature', 'humidity'] %}
             <li class="entry-item-small">
-                <div class="entry-state">
-                    {% set device_class_icons = {
-                        'temperature': 'temperature-half',
-                        'humidity': 'droplet',
-                        'power': 'bolt',
-                        'energy': 'bolt',
-                        'signal_strength': 'signal',
-                        'battery': 'battery-full'
-                    } %}
-                    
-                    {% set icon_id = device_class_icons.get(sensor.state.attributes.device_class, 'default-icon') %}
-                    <img src="webfonts/regular.svg?id={{ icon_id }}" class="entry-icon-small">
-                    <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
-                </div>
-                {{ sensor.state.attributes.friendly_name }}<br>
+                <a href="graph.html?sensor={{ sensor_key }}" class="entry-link">
+
+                    <div class="entry-state">
+                        {% set device_class_icons = {
+                            'temperature': 'temperature-half',
+                            'humidity': 'droplet',
+                            'power': 'bolt',
+                            'energy': 'bolt',
+                            'signal_strength': 'signal',
+                            'battery': 'battery-full'
+                        } %}
+                        
+                        {% set icon_id = device_class_icons.get(sensor.state.attributes.device_class, 'default-icon') %}
+                        <img src="webfonts/regular.svg?id={{ icon_id }}" class="entry-icon-small">
+                        <strong>{{ sensor.state.state }} {{ sensor.state.attributes.unit_of_measurement }}</strong>
+                    </div>
+                    {{ sensor.state.attributes.friendly_name }}<br>
+                </a>
             </li>
         {% endif %}
     {% endfor %}

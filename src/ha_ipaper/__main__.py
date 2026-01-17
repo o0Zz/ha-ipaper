@@ -14,6 +14,8 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from jinja2 import ChoiceLoader, FileSystemLoader
 
+from ha_ipaper.routers import graph
+
 from .core.config import PagesConfig
 from .core.dependencies import get_pages_config
 from .routers import pages, svg
@@ -31,12 +33,6 @@ CONFIG_VALIDATORS = [
     Validator("loggercfg", must_exist=True),
     Validator("menu", must_exist=True),
 ]
-
-
-def http_to_websocket_url(url: str) -> str:
-    """Convert HTTP URL to WebSocket URL for Home Assistant API."""
-    ws_url = url.replace("http://", "ws://").replace("https://", "wss://")
-    return f"{ws_url}/api/websocket"
 
 
 def create_templates(html_folders: list[str]) -> Jinja2Templates:
@@ -57,16 +53,13 @@ def create_app(
     ha_token: str,
     menu: dict,
     timezone: str | None = None,
+    graph_days: int = 7,
 ) -> FastAPI:
     """Create and configure the FastAPI application."""
     app = FastAPI(
         title="HA-IPaper",
         description="Home Assistant Interactive ePaper Dashboard",
     )
-
-    # Convert to WebSocket URL if needed
-    if ha_url.startswith(("http://", "https://")):
-        ha_url = http_to_websocket_url(ha_url)
 
     # Configure pages
     config = PagesConfig(
@@ -76,10 +69,12 @@ def create_app(
         menu=menu,
         timezone=timezone,
         templates=create_templates(html_folders),
+        graph_days=graph_days,
     )
     app.dependency_overrides[get_pages_config] = lambda: config
 
     # Include routers (SVG first to match .svg before generic path)
+    app.include_router(graph.router)
     app.include_router(svg.router)
     app.include_router(pages.router)
 
@@ -150,6 +145,7 @@ def main() -> None:
         ha_token=config.general.homeassistant_token,
         menu=config.menu,
         timezone=config.general.timezone,
+        graph_days=config.graph.days,
     )
 
     # Run server
