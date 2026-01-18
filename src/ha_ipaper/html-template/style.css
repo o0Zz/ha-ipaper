@@ -219,7 +219,7 @@ nav a.active {
 }
 
 .entry-link {
-    text-decoration: none;
+    text-decoration: none !important;
     color: inherit;
     display: block;
 }
