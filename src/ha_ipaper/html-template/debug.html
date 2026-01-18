@@ -151,7 +151,7 @@
 
     <div class="section">
         <h2>Menu</h2>
-        <div class="box">{{ menu | pprint }}</div>
+        <div class="box">{{ menu | tojson(indent=2) }}</div>
     </div>
 
     <div class="section">
@@ -199,7 +199,7 @@
                                 <td colspan="5">
                                     <details>
                                         <summary>entity.state.attributes</summary>
-                                        <pre>{{ entity.state.attributes | pprint }}</pre>
+                                        <pre>{{ entity.state.attributes | tojson(indent=2) }}</pre>
                                     </details>
                                 </td>
                             </tr>
@@ -255,7 +255,7 @@
                                                     <td colspan="5">
                                                         <details>
                                                             <summary>entity.state.attributes</summary>
-                                                            <pre>{{ entity.state.attributes | pprint }}</pre>
+                                                            <pre>{{ entity.state.attributes | tojson(indent=2) }}</pre>
                                                         </details>
                                                     </td>
                                                 </tr>
@@ -281,7 +281,7 @@
                                         <span class="kv-meta">{{ item.__class__.__name__ }}</span>
                                     </summary>
                                     <div class="box tight">
-                                        <pre>{{ item | pprint }}</pre>
+                                        <pre>{{ item | tojson(indent=2) }}</pre>
                                     </div>
                                 </details>
                             {% endif %}
@@ -315,7 +315,7 @@
     <div class="section">
         <h2>All template variables</h2>
         <div class="box">
-    {{ self._TemplateReference__context | pprint }}
+            {{ self._TemplateReference__context | pprint}}
         </div>
     </div>
 </div>
