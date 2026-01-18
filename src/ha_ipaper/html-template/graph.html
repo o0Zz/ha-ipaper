@@ -17,7 +17,7 @@
         }
 
         .close-button {
-            font-size: 1.5em;
+            font-size: 2em;
             text-decoration: none;
             color: black;
             padding: 5px;
@@ -25,22 +25,26 @@
 
         .graph-container {
             text-align: center;
-            border: 1px solid #ccc;
-            padding: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="top-bar">
-        <a href="javascript:history.back()" class="close-button">✕</a>
+        <a href="javascript:history.back()" class="close-button">X</a>
     </div>
 
     <div class="graph-container">
         <h3>{{ request.query_params.get("sensor") }}</h3>
 
         <!-- Static image or server-rendered SVG -->
-        <img src="graph.svg?sensor={{ request.query_params.get("sensor") }}" alt="Graph" width="100%">
+        
+        <object
+            data="graph.svg?sensor={{ request.query_params.get('sensor') }}"
+            type="image/svg+xml"
+            width="100%"
+            style="height: auto;">
+</object>
     </div>
 
 </body>

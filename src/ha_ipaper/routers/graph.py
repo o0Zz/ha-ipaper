@@ -35,7 +35,7 @@ def graph_svg(
     matplotlib.use("Agg")
 
     x = [entry[0] for entry in history]
-    y = [float(entry[1]) for entry in history]
+    y = [entry[1] for entry in history]
 
     fig, ax = plt.subplots(figsize=(7, 3))
 

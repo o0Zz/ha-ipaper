@@ -67,6 +67,9 @@ class HomeAssistantService:
 
         values = []
         for state in history.states:
-            values.append((state.last_changed, state.state))
+            try:
+                values.append((state.last_changed, float(state.state)))
+            except (ValueError, TypeError):
+                pass  # Ignore non-numeric
 
         return values
