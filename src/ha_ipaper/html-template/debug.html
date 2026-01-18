@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug – {{ title }}</title>
+    <style>
+        body{
+            margin:0;
+            font:12px/1.4 "JetBrains Mono",Consolas,monospace;
+            background:#f2f5f8;
+            color:#1e1f23
+        }
+
+        h1,h2{
+            font-family:"Space Grotesk","Segoe UI",sans-serif;
+            letter-spacing:.02em;
+            margin:0 0 .75rem
+        }
+        h1{font-size:1.5rem}
+        h2{font-size:1.1rem}
+
+        .container{
+
+            margin:auto;
+            padding:24px 32px 48px
+        }
+
+        .section,.domain-block,.kv-item{
+            background:#fff;
+            border:1px solid #dbe1ea;
+            border-radius:8px
+        }
+
+        .section{
+            margin-bottom:.75rem;
+            padding:1rem 1.25rem;
+            box-shadow:0 2px 4px rgba(15,23,42,.08)
+        }
+
+        .domain-block{
+            padding:.75rem;
+            margin-bottom:.75rem;
+            background:#fdfefe
+        }
+
+        .domain-header{
+            display:flex;
+            justify-content:space-between;
+            font-size:.85rem;
+            font-weight:600;
+            text-transform:uppercase;
+            color:#475569;
+            margin-bottom:.5rem
+        }
+
+        .domain-badge{
+            background:#111827;
+            color:#fff;
+            border-radius:999px;
+            padding:.15rem .75rem;
+            font-size:.75rem;
+            letter-spacing:.08em
+        }
+
+        .domain-count,.kv-meta,.entity-meta{
+            font-size:.75rem;
+            color:#64748b
+        }
+
+        .kv-title{
+            flex: 1;
+            text-align: left;
+        }
+
+        .box{
+            border:1px solid #e2e8f0;
+            border-radius:6px;
+            padding:.75rem;
+            background:#f8fafc;
+            white-space:pre-wrap;
+            overflow-x:auto
+        }
+        .box.tight{padding:.5rem}
+
+        .kv-list{
+            display:flex;
+            flex-direction:column;
+            gap:.45rem
+        }
+
+        .kv-item{padding:.25rem .75rem .5rem}
+
+        .kv-item summary{
+            cursor:pointer;
+            display:flex;
+            justify-content:space-between;
+            font-weight:600;
+            color:#0f172a
+        }
+
+        .kv-item summary::-webkit-details-marker{display:none}
+        .kv-item summary::before{content:"+";margin-right:.35rem;color:#475569}
+        .kv-item[open] summary::before{content:"−"}
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:.5rem
+        }
+
+        th,td{
+            border:1px solid #e2e8f0;
+            padding:.4rem .5rem;
+            text-align:left
+        }
+
+        th{
+            background:#f1f5f9;
+            font-weight:600
+        }
+
+        th:first-child,td:first-child{width:20%}
+
+        .key-pill{
+            display:inline-block;
+            padding:.15rem .55rem;
+            border-radius:6px;
+            background:#e0e7ff;
+            color:#312e81;
+            font-weight:600
+        }
+
+        pre{margin:0}
+        details{margin-top:.35rem}
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Debug page</h1>
+    <p><strong>Date:</strong> {{ date }}</p>
+
+    <div class="section">
+        <h2>Title</h2>
+        <div class="box">{{ title }}</div>
+    </div>
+
+    <div class="section">
+        <h2>Page</h2>
+        <div class="box">{{ page | pprint }}</div>
+    </div>
+
+    <div class="section">
+        <h2>Menu</h2>
+        <div class="box">{{ menu | pprint }}</div>
+    </div>
+
+    <div class="section">
+        <h2>Entities (structured)</h2>
+
+        {% for domain, group in entities.items() %}
+            <div class="domain-block">
+                <div class="domain-header">
+                    <span class="domain-badge">{{ domain }}</span>
+                    <span class="domain-count">
+                        {% if group is mapping and group.entities is defined %}
+                            {% set entity_items = group.entities.items() | list %}
+                            {{ entity_items | length }} entities
+                        {% elif group is iterable %}
+                            {% set group_list = group | list %}
+                            {{ group_list | length }} items
+                        {% else %}
+                            unsupported object
+                        {% endif %}
+                    </span>
+                </div>
+
+                {% if group is mapping and group.entities is defined %}
+
+                    <table>
+                        <tr>
+                            <th>entity_key</th>
+                            <th>entity_id</th>
+                            <th>attributes.friendly_name</th>
+                            <th>state</th>
+                            <th>last_changed</th>
+                        </tr>
+
+                        {% for slug, entity in entity_items %}
+                            <tr>
+                                <td><span class="key-pill">{{ slug }}</span></td>
+                                <td class="entity-meta">{{ entity.state.entity_id }}</td>
+                                <td>{{ entity.state.attributes.friendly_name or slug }}</td>
+                                <td><strong>{{ entity.state.state }}</strong></td>
+                                <td class="entity-meta">{{ entity.last_changed }}</td>
+                            </tr>
+
+                            {% if entity.state.attributes %}
+                            <tr>
+                                <td colspan="5">
+                                    <details>
+                                        <summary>entity.state.attributes</summary>
+                                        <pre>{{ entity.state.attributes | pprint }}</pre>
+                                    </details>
+                                </td>
+                            </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </table>
+
+                {% elif group is iterable %}
+                    {% set group_list = group | list %}
+                    <div class="kv-list">
+                        {% for item in group_list %}
+                            {% if item is sequence and (item | length) == 2 %}
+                                {% set key = item[0] %}
+                                {% set value = item[1] %}
+                                {% set summary_meta = value.__class__.__name__ %}
+                                {% if key == 'entities' and value is mapping %}
+                                    {% set value_items = value.items() | list %}
+                                    {% set summary_meta = value_items | length ~ ' entities' %}
+                                {% elif value is mapping %}
+                                    {% set value_items = value.items() | list %}
+                                    {% set summary_meta = value_items | length ~ ' keys' %}
+                                {% elif value is iterable and value is not string %}
+                                    {% set value_seq = value | list %}
+                                    {% set summary_meta = value_seq | length ~ ' items' %}
+                                {% endif %}
+                                <details class="kv-item">
+                                    <summary>
+                                        <span class="kv-title">{{ key }}</span>
+                                        <span class="kv-meta">{{ summary_meta }}</span>
+                                    </summary>
+
+                                    {% if key == 'entities' and value is mapping %}
+                                        <table>
+                                            <tr>
+                                                <th>entity_key</th>
+                                                <th>entity.state.entity_id</th>
+                                                <th>entity.state.attributes.friendly_name</th>
+                                                <th>entity.state.state</th>
+                                                <th>entity.last_changed</th>
+                                            </tr>
+
+                                            {% for slug, entity in value_items %}
+                                                <tr>
+                                                    <td><span class="key-pill">{{ slug }}</span></td>
+                                                    <td class="entity-meta">{{ entity.state.entity_id }}</td>
+                                                    <td>{{ entity.state.attributes.friendly_name or slug }}</td>
+                                                    <td><strong>{{ entity.state.state }}</strong></td>
+                                                    <td class="entity-meta">{{ entity.last_changed }}</td>
+                                                </tr>
+
+                                                {% if entity.state.attributes %}
+                                                <tr>
+                                                    <td colspan="5">
+                                                        <details>
+                                                            <summary>entity.state.attributes</summary>
+                                                            <pre>{{ entity.state.attributes | pprint }}</pre>
+                                                        </details>
+                                                    </td>
+                                                </tr>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </table>
+                                    {% else %}
+                                        <div class="box tight">
+                                            {% if value is mapping %}
+                                                <pre>{{ value | pprint }}</pre>
+                                            {% elif value is iterable and value is not string %}
+                                                <pre>{{ value_seq | pprint }}</pre>
+                                            {% else %}
+                                                <pre>{{ value | pprint }}</pre>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                </details>
+                            {% else %}
+                                <details class="kv-item">
+                                    <summary>
+                                        <span class="kv-title">Item {{ loop.index }}</span>
+                                        <span class="kv-meta">{{ item.__class__.__name__ }}</span>
+                                    </summary>
+                                    <div class="box tight">
+                                        <pre>{{ item | pprint }}</pre>
+                                    </div>
+                                </details>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                {% else %}
+                    <div class="box">Unsupported type: {{ group.__class__.__name__ }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Request</h2>
+        <div class="box">
+    Method: {{ request.method }}
+    Path: {{ request.path }}
+    Full URL: {{ request.url }}
+
+    Args:
+    {{ request.args | pprint }}
+
+    Headers:
+    {{ request.headers | pprint }}
+
+    Remote Addr: {{ request.remote_addr }}
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>All template variables</h2>
+        <div class="box">
+    {{ self._TemplateReference__context | pprint }}
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
