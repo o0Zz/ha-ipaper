@@ -41,6 +41,10 @@ menu:
       icon: "webfonts/regular.svg?id=toggle-on"
       components: ["components/switches.html"]
 
+    - name: "Debug"
+      icon: "webfonts/regular.svg?id=bug"
+      components: ["debug.html"]
+
 loggercfg:
   version: 1
   disable_existing_loggers: False
