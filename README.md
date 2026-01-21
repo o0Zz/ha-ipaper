@@ -37,13 +37,24 @@ uv run python -m ha_ipaper -config config.yaml
 
 ## Configuration
 
-### Home Assistant Access
+### Home Assistant Setup
+
+#### Option 1: From environment variable
+
+ - Edit `docker/docker-compose.yaml`
+ - Update environment variables:
+```
+      - HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123
+      - HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE
+```
+
+#### Option 2: From config.yaml file
 
 Edit config.yaml with your Home Assistant details:
 
 ```yaml
 general:
- homeassistant_url: https://your_home_assistant.com
+ homeassistant_url: http://homeassistant.local:8123
  homeassistant_token: YOUR_LONG_LIVED_ACCESS_TOKEN
 ```
 
