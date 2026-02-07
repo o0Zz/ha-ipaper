@@ -2,10 +2,9 @@
 
 This document lists **Kindle** and **Kobo** e-readers that can be jailbroken or configured for fullscreen / kiosk-style usage, along with compatible firmware versions and useful tools.
 
----
+
 
 ## Kindle
----
 
 ### Overview
 A jailbroken Kindle is **preferred** (but not always required) to:
@@ -68,8 +67,9 @@ A jailbroken Kindle is **preferred** (but not always required) to:
 | PW3 | 512 MB | 6\" |
 
 
+
+
 ## Kobo
----
 
 ### Device Comparison
 - https://comparisontabl.es/kobo-e-readers/
@@ -104,7 +104,6 @@ FullScreenReading=true
 ```
 
 ## Notes
----
 
 - Kindle firmware auto-updates can break jailbreaks.
 - Kobo devices are generally more permissive.
