@@ -24,7 +24,7 @@ dependencies = [
 ]
 
 [project.urls]
-Home = "https://github.com/"
+Home = "https://github.com/o0zz/ha-ipaper"
 
 [tool.setuptools.packages.find]
 where = ["src"]
