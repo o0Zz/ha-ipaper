@@ -1,0 +1,23 @@
+# Home Assistant add-on manifest (not the application configuration)
+# `version` must match a published image tag: ghcr.io/o0zz/ha-ipaper:<version>
+name: HA-IPaper
+version: "1.0.0"
+slug: ha_ipaper
+description: Interactive e-Paper dashboard for Kobo, Kindle and other e-readers
+url: https://github.com/o0Zz/ha-ipaper
+arch:
+  - amd64
+  - aarch64
+image: ghcr.io/o0zz/ha-ipaper
+startup: application
+boot: auto
+homeassistant_api: true
+ports:
+  8081/tcp: 8081
+ports_description:
+  8081/tcp: Dashboard (open this URL on the e-reader)
+webui: "http://[HOST]:[PORT:8081]/"
+map:
+  - addon_config:rw
+options: {}
+schema: {}

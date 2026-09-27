@@ -18,6 +18,26 @@ HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables di
 
 ## Quick Start
 
+### Home Assistant add-on (HA OS / Supervised)
+
+[![Add repository](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fo0Zz%2Fha-ipaper)
+
+1. In Home Assistant, go to **Settings → Add-ons → Add-on Store → ⋮ → Repositories**.
+2. Add `https://github.com/o0Zz/ha-ipaper` and close the dialog.
+3. Install **HA-IPaper** and start it.
+4. On your e-reader, open `http://<home-assistant-ip>:8081/`.
+
+No access token is needed. The configuration file is created in `/addon_configs/<id>_ha_ipaper/config.yaml`.
+
+### Run the published docker image
+
+```
+docker run -d -p 8081:8081 -v /data/ha-ipaper:/config \
+  -e HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123 \
+  -e HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE \
+  ghcr.io/o0zz/ha-ipaper:latest
+```
+
 ### Build & run from docker
 ```
 docker build -f docker/Dockerfile -t ha-ipaper:latest .

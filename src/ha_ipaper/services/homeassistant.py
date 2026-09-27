@@ -8,7 +8,10 @@ _LOGGER = logging.getLogger(__name__)
 
 class HomeAssistantService:
     def __init__(self, url: str, token: str):
-        self._ws_url = f"{url.replace('http://', 'ws://').replace('https://', 'wss://')}/api/websocket"
+        url = url.rstrip("/")
+        # The Supervisor proxy (add-on mode) serves the websocket at /core/websocket, not /core/api/websocket
+        ws_path = "/websocket" if url == "http://supervisor/core" else "/api/websocket"
+        self._ws_url = f"{url.replace('http://', 'ws://').replace('https://', 'wss://')}{ws_path}"
         self._http_url = f"{url}/api"
         self._token = token
 
