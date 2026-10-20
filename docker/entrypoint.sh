@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
 # Running as a Home Assistant add-on: talk to Home Assistant through the Supervisor proxy
@@ -16,4 +16,4 @@ if [ ! -f /config/config.yaml ]; then
   cp /app/config.yaml /config/config.yaml
 fi
 
-exec uv run ha-ipaper -config /config/config.yaml
+exec ha-ipaper -config /config/config.yaml

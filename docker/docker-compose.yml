@@ -1,6 +1,9 @@
 services:
   ha-ipaper:
     image: ha-ipaper:latest
+    build:
+      context: ..
+      dockerfile: Dockerfile
     container_name: ha-ipaper
     environment:
       - PUID=1000

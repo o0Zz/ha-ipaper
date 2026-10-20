@@ -40,13 +40,13 @@ docker run -d -p 8081:8081 -v /data/ha-ipaper:/config \
 
 ### Build & run from docker
 ```
-docker build -f docker/Dockerfile -t ha-ipaper:latest .
+docker build -t ha-ipaper:latest .
 ```
 
-Edit `docker/docker-compose.yml`
+Edit `docker/docker-compose.yml`, then build and start:
 
 ```
-docker compose up
+docker compose -f docker/docker-compose.yml up --build
 ```
 
 ### Run with UV

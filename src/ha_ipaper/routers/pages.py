@@ -45,9 +45,9 @@ async def serve_html(
     try:
         resolve_safe_path(config.html_folders, filename, ".html")
         return config.templates.TemplateResponse(
+            request,
             f"{filename}.html",
             {
-                "request": request,
                 "title": "Home Assistant Interactive ePaper Dashboard",
                 "menu": config.menu,
                 "entities": ha.get_data(),
@@ -60,9 +60,9 @@ async def serve_html(
     except Exception as exc:
         _LOGGER.exception("Error while rendering %s.html", filename)
         return config.templates.TemplateResponse(
+            request,
             "error.html",
             {
-                "request": request,
                 "title": f"Error while rendering {filename}.html",
                 "parameters": dict(request.query_params),
                 "error_message": str(exc),

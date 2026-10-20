@@ -1,0 +1,9 @@
+.git
+.github
+.venv
+.vscode
+.env
+**/__pycache__
+**/*.egg-info
+doc
+ha-ipaper-addon
