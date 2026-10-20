@@ -27,7 +27,8 @@ FROM python:3.13-alpine
 
 # Pick up Alpine security fixes released after the base image, drop pip (unused at runtime)
 # libstdc++ is needed by C++ extensions built from source in the build stage
-RUN apk upgrade --no-cache     && apk add --no-cache libstdc++ \
+RUN apk upgrade --no-cache \
+    && apk add --no-cache libstdc++ \
     && python -m pip uninstall -y pip \
     && rm -rf /root/.cache
 
