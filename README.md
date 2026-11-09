@@ -29,24 +29,78 @@ HA-IPaper is a ready-to-use e-paper dashboard for Home Assistant that enables di
 
 No access token is needed. The configuration file is created in `/addon_configs/<id>_ha_ipaper/config.yaml`.
 
-### Run the published docker image
+### Docker (any machine with Docker)
+
+Use this when Home Assistant does not run on HA OS / Supervised, or when you want to run HA-IPaper on another machine.
+You do not need to download the source code: the image is published on `ghcr.io`.
+
+First, create a Home Assistant long-lived access token (see [Home Assistant Setup](#home-assistant-setup)).
+
+#### Option A: `docker run`
 
 ```
-docker run -d -p 8081:8081 -v /data/ha-ipaper:/config \
+docker run -d --name ha-ipaper --restart unless-stopped -p 8081:8081 -v /data/ha-ipaper:/config \
   -e HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123 \
   -e HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE \
   ghcr.io/o0zz/ha-ipaper:latest
 ```
 
-### Build & run from docker
+#### Option B: `docker compose`
+
+1. Create a folder (for example `ha-ipaper/`) and, in it, a file `docker-compose.yml`:
+   ```yaml
+   services:
+     ha-ipaper:
+       image: ghcr.io/o0zz/ha-ipaper:latest
+       container_name: ha-ipaper
+       environment:
+         - TZ=Europe/London
+         - HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123
+         - HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE
+       volumes:
+         - /data/ha-ipaper:/config
+       ports:
+         - 8081:8081
+       restart: unless-stopped
+   ```
+2. Replace the Home Assistant URL and token with your values.
+3. In the same folder, start the container in the background: `docker compose up -d`.
+
+#### Open the dashboard
+
+On your e-reader, open `http://<ip-of-the-docker-machine>:8081/`.
+This is the IP of the machine that runs Docker, not the IP of Home Assistant (unless both are the same machine).
+
+#### Configuration file
+
+- On first start, the container creates `config.yaml` in the folder mounted on `/config`.
+  With the examples above, this is `/data/ha-ipaper/config.yaml` on the Docker machine.
+- After you edit it, restart the container: `docker restart ha-ipaper`. You do not need to rebuild anything.
+- The `HA_IPAPER_GENERAL__...` environment variables override the same values in `config.yaml`.
+
+#### Change the port
+
+Change only the left part of the port mapping, for example `-p 8122:8081` or `- 8122:8081`, then open `http://<ip>:8122/`.
+Do not change `bind_port` in `config.yaml`: it is the port inside the container, and the mapping must point to it.
+
+#### Troubleshooting
+
+- `docker ps` must list `ha-ipaper` as `Up`. If not, the container stopped at start.
+- `docker logs ha-ipaper` shows why: wrong `config.yaml`, Home Assistant URL not reachable, wrong token, ...
+- If the page shows an error instead of the dashboard, check the Home Assistant URL and token.
+  The URL must be reachable from the Docker machine. Use an IP (`http://192.168.x.y:8123`) if `homeassistant.local` does not resolve.
+
+### Build from source with docker compose
+
 ```
-docker build -t ha-ipaper:latest .
+git clone https://github.com/o0Zz/ha-ipaper.git
+cd ha-ipaper
 ```
 
-Edit `docker/docker-compose.yml`, then build and start:
+Edit the Home Assistant URL and token in `docker/docker-compose.yml`, then build and start:
 
 ```
-docker compose -f docker/docker-compose.yml up --build
+docker compose -f docker/docker-compose.yml up -d --build
 ```
 
 ### Run with UV
@@ -61,8 +115,7 @@ uv run python -m ha_ipaper -config config.yaml
 
 #### Option 1: From environment variable
 
- - Edit `docker/docker-compose.yaml`
- - Update environment variables:
+ - In your `docker run` command or `docker-compose.yml` (see [Docker](#docker-any-machine-with-docker)), set:
 ```
       - HA_IPAPER_GENERAL__homeassistant_url=http://homeassistant.local:8123
       - HA_IPAPER_GENERAL__homeassistant_token=YOUR_LONG_LIVED_ACCESS_TOKEN_HERE
