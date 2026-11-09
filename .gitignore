@@ -5,3 +5,4 @@ __pycache__/
 .venv
 debug.yaml
 html-template/svg/
+*.egg-info
