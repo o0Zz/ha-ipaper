@@ -11,7 +11,10 @@ from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 
 from ha_ipaper.core.config import PagesConfig
 from ha_ipaper.core.dependencies import get_homeassistant, get_pages_config
-from ha_ipaper.services.homeassistant import HomeAssistantService
+from ha_ipaper.services.homeassistant import (
+    HomeAssistantConnectionError,
+    HomeAssistantService,
+)
 from ha_ipaper.utils.filesystem import resolve_safe_path
 
 _LOGGER = logging.getLogger(__name__)
@@ -57,6 +60,18 @@ async def serve_html(
         )
     except HTTPException:
         raise
+    except HomeAssistantConnectionError as exc:
+        _LOGGER.error("Error while rendering %s.html: %s", filename, exc)
+        return config.templates.TemplateResponse(
+            request,
+            "error.html",
+            {
+                "title": "Cannot connect to Home Assistant",
+                "parameters": dict(request.query_params),
+                "error_message": str(exc),
+            },
+            status_code=200,
+        )
     except Exception as exc:
         _LOGGER.exception("Error while rendering %s.html", filename)
         return config.templates.TemplateResponse(

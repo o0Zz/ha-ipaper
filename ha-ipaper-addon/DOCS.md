@@ -7,7 +7,15 @@ Interactive e-Paper dashboard for Home Assistant, designed for the built-in brow
 1. Start the add-on.
 2. On your e-reader, open `http://<home-assistant-ip>:8081/`.
 
-No access token is needed: the add-on talks to Home Assistant through the Supervisor.
+No access token is needed: by default, the add-on talks to Home Assistant through the Supervisor.
+
+### Direct connection
+
+If the dashboard shows "The Home Assistant Supervisor cannot reach Home Assistant Core (HTTP 502)",
+you can bypass the Supervisor. In the add-on **Configuration** tab, set both options and restart the add-on:
+
+- `homeassistant_url`: the URL of your Home Assistant, for example `http://192.168.1.10:8123`.
+- `homeassistant_token`: a long-lived access token (Home Assistant profile, **Security** tab).
 
 ## Configuration
 
@@ -16,7 +24,7 @@ On first start, the add-on creates `config.yaml` in `/addon_configs/<id>_ha_ipap
 
 Edit this file to change the menu, the pages and the graphs, then restart the add-on.
 The `homeassistant_url`, `homeassistant_token` and `timezone` values in this file are ignored:
-the add-on always uses the Supervisor connection and the Home Assistant timezone.
+the add-on uses the Supervisor connection (or the add-on options above) and the Home Assistant timezone.
 
 ### Template override
 

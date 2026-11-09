@@ -15,8 +15,10 @@
 	<h1>{{title}}</h1>
 	<p>Parameters: {{ parameters }}</p>
 	<p>Error: {{error_message}}</p>
+	{% if stacktrace %}
 	<p>Stack trace:</p>
 	<pre>{{ stacktrace | e }}</pre>
+	{% endif %}
 	<p>Refreshing in 60s...</p>
 	<center><button onclick="location.reload()" class="refresh-button">Refresh Now</button></center>
 </body>

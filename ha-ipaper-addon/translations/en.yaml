@@ -1,0 +1,11 @@
+configuration:
+  homeassistant_url:
+    name: Home Assistant URL
+    description: >-
+      Optional. Connect directly to Home Assistant instead of through the Supervisor,
+      for example http://192.168.1.10:8123. Requires the access token below.
+  homeassistant_token:
+    name: Home Assistant access token
+    description: >-
+      Optional. Long-lived access token used with the Home Assistant URL above
+      (create it in your Home Assistant profile, Security tab).

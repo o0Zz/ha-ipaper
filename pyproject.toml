@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ha-ipaper"
-version = "1.0.0"
+version = "1.0.1"
 description = "Home Assistant Interactive e-Paper Dashboard (For Kobo, Kindle, etc...)"
 readme = "README.md"
 requires-python = ">=3.11"

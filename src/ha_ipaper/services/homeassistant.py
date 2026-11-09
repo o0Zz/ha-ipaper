@@ -1,23 +1,54 @@
 import logging
+from collections.abc import Iterator
+from contextlib import contextmanager
 from datetime import datetime
 
 from homeassistant_api import Client, Entity, WebsocketClient
+from websockets.exceptions import InvalidStatus
 
 _LOGGER = logging.getLogger(__name__)
+
+SUPERVISOR_URL = "http://supervisor/core"
+
+
+class HomeAssistantConnectionError(Exception):
+    """Home Assistant refused the connection; the message tells the user what to check."""
 
 
 class HomeAssistantService:
     def __init__(self, url: str, token: str):
         url = url.rstrip("/")
+        self._is_supervisor = url == SUPERVISOR_URL
         # The Supervisor proxy (add-on mode) serves the websocket at /core/websocket, not /core/api/websocket
-        ws_path = "/websocket" if url == "http://supervisor/core" else "/api/websocket"
+        ws_path = "/websocket" if self._is_supervisor else "/api/websocket"
         self._ws_url = f"{url.replace('http://', 'ws://').replace('https://', 'wss://')}{ws_path}"
         self._http_url = f"{url}/api"
         self._token = token
 
+    @contextmanager
+    def _websocket(self) -> Iterator[WebsocketClient]:
+        try:
+            with WebsocketClient(self._ws_url, self._token) as client:
+                yield client
+        except InvalidStatus as exc:
+            status = exc.response.status_code
+            if self._is_supervisor and status == 502:
+                message = (
+                    "The Home Assistant Supervisor cannot reach Home Assistant Core (HTTP 502). "
+                    "Check that Home Assistant Core is started and running. "
+                    "To bypass the Supervisor, set homeassistant_url and homeassistant_token "
+                    "in the add-on configuration."
+                )
+            else:
+                message = (
+                    f"Home Assistant rejected the WebSocket connection to {self._ws_url} "
+                    f"(HTTP {status}). Check homeassistant_url and homeassistant_token."
+                )
+            raise HomeAssistantConnectionError(message) from exc
+
     def get_data(self) -> dict:
         _LOGGER.debug("Fetching Home Assistant entities")
-        with WebsocketClient(self._ws_url, self._token) as client:
+        with self._websocket() as client:
             entities = client.get_entities()
             entities["weather_forecast"] = client.trigger_service_with_response(
                 "weather",
@@ -31,7 +62,7 @@ class HomeAssistantService:
     async def call_service(self, service: str, data: dict) -> None:
         domain, function = service.split(".")
         _LOGGER.debug("Calling Home Assistant service %s with data %s", service, data)
-        with WebsocketClient(self._ws_url, self._token) as client:
+        with self._websocket() as client:
             with client.listen_events("state_changed") as events:
                 client.trigger_service(domain, function, **data)
                 next(events, None)
