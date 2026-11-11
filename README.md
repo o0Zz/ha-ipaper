@@ -109,6 +109,11 @@ uv sync
 uv run python -m ha_ipaper -config config.yaml
 ```
 
+Run the tests (they use a fake Home Assistant, no real instance needed):
+```bash
+uv run pytest
+```
+
 ## Configuration
 
 ### Home Assistant Setup
