@@ -1,7 +1,7 @@
 # Home Assistant add-on manifest (not the application configuration)
 # `version` must match a published image tag: ghcr.io/o0zz/ha-ipaper:<version>
 name: HA-IPaper
-version: "1.0.2"
+version: "1.0.3"
 slug: ha_ipaper
 description: Interactive e-Paper dashboard for Kobo, Kindle and other e-readers
 url: https://github.com/o0Zz/ha-ipaper

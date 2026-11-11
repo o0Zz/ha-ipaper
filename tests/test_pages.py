@@ -29,6 +29,7 @@ def make_config(url: str) -> PagesConfig:
         menu=MENU,
         timezone="Europe/Paris",
         templates=create_templates([TEMPLATES]),
+        graph_days=7,
     )
 
 
@@ -116,5 +117,5 @@ def test_post_calls_service_then_renders(fake_ha):
     # The page render also calls weather.get_forecasts
     [call] = [call for call in ha.service_calls if call["domain"] == "switch"]
     assert call["service"] == "turn_on"
-    assert call["target"] == {"entity_id": "switch.coffee_machine"}
+    assert call["service_data"] == {"entity_id": "switch.coffee_machine"}
     assert "Coffee machine" in response.body.decode()

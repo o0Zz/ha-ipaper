@@ -2,12 +2,9 @@ import asyncio
 import json
 
 import pytest
-from homeassistant_api import WebsocketClient
 from homeassistant_api.errors import UnauthorizedError
-from websockets.exceptions import ConnectionClosedError
 
 from ha_ipaper.services.homeassistant import (
-    MAX_MESSAGE_SIZE,
     HomeAssistantConnectionError,
     HomeAssistantService,
 )
@@ -47,7 +44,7 @@ def _add_big_states(ha, count: int = 6000) -> int:
         for i in range(count)
     ]
     size = len(json.dumps(ha.states))
-    assert 1024 * 1024 < size < MAX_MESSAGE_SIZE
+    assert size > 1024 * 1024
     return size
 
 
@@ -59,16 +56,6 @@ def test_get_data_many_entities(fake_ha):
     entities = HomeAssistantService(url, TOKEN).get_data()
 
     assert len(entities["sensor"].entities) == 6001
-
-
-def test_library_client_fails_with_many_entities(fake_ha):
-    """Documents why HomeAssistantService does not use homeassistant_api.WebsocketClient as is."""
-    ha, url = fake_ha
-    _add_big_states(ha)
-
-    with pytest.raises(ConnectionClosedError, match="message too big"):
-        with WebsocketClient(f"{url.replace('http', 'ws')}/api/websocket", TOKEN) as client:
-            client.get_states()
 
 
 def test_supervisor_502_gives_clear_error(fake_ha):
@@ -111,4 +98,4 @@ def test_call_service(fake_ha):
     [call] = ha.service_calls
     assert call["domain"] == "switch"
     assert call["service"] == "turn_on"
-    assert call["target"] == {"entity_id": "switch.coffee_machine"}
+    assert call["service_data"] == {"entity_id": "switch.coffee_machine"}

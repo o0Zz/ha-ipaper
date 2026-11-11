@@ -3,37 +3,19 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 
-import websockets.sync.client
 from homeassistant_api import Client, Entity, WebsocketClient
-from websockets.exceptions import InvalidStatus
+from niquests.exceptions import HTTPError
 
 _LOGGER = logging.getLogger(__name__)
 
 SUPERVISOR_URL = "http://supervisor/core"
 
-# The get_states reply holds every entity and exceeds the websockets default limit (1 MiB)
-# on large installations. Same limit as the Supervisor uses for messages from Core.
-MAX_MESSAGE_SIZE = 64 * 1024 * 1024
+# Entity domains searched by get_entity (the graph page passes the entity name without its domain)
+GRAPH_DOMAINS = ("sensor", "binary_sensor", "switch", "light", "climate")
 
 
 class HomeAssistantConnectionError(Exception):
     """Home Assistant refused the connection; the message tells the user what to check."""
-
-
-class _WebsocketClient(WebsocketClient):
-    """WebsocketClient that accepts messages up to MAX_MESSAGE_SIZE.
-
-    homeassistant_api opens the connection with the websockets default size limit
-    and has no option to change it, so __enter__ is redone with max_size set.
-    """
-
-    def __enter__(self):
-        self._conn = websockets.sync.client.connect(self.api_url, max_size=MAX_MESSAGE_SIZE)
-        self._conn.__enter__()
-        okay = self.authentication_phase()
-        _LOGGER.debug("Authenticated with Home Assistant (%s)", okay.ha_version)
-        self.supported_features_phase()
-        return self
 
 
 class HomeAssistantService:
@@ -49,9 +31,11 @@ class HomeAssistantService:
     @contextmanager
     def _websocket(self) -> Iterator[WebsocketClient]:
         try:
-            with _WebsocketClient(self._ws_url, self._token) as client:
+            with WebsocketClient(self._ws_url, self._token) as client:
                 yield client
-        except InvalidStatus as exc:
+        except HTTPError as exc:
+            if exc.response is None:
+                raise
             status = exc.response.status_code
             if self._is_supervisor and status == 502:
                 message = (
@@ -90,36 +74,40 @@ class HomeAssistantService:
 
         _LOGGER.debug("Service %s called successfully", service)
 
+    @staticmethod
+    def _find_entity(client: Client, entity_id: str) -> Entity | None:
+        entities = client.get_entities()
+        for domain in GRAPH_DOMAINS:
+            group = entities.get(domain)
+            if group is not None and entity_id in group.entities:
+                return group.entities[entity_id]
+
+        _LOGGER.debug("Entity %s not found", entity_id)
+        return None
+
     def get_entity(self, entity_id: str) -> Entity | None:
         with Client(self._http_url, self._token) as client:
-            entities = client.get_entities()
-            for entity_type in (
-                "sensor",
-                "binary_sensor",
-                "switch",
-                "light",
-                "climate",
-            ):
-                for entity_key, entity in entities[entity_type].entities.items():
-                    if entity_key == entity_id:
-                        return entity
-
-        _LOGGER.debug(f"Entity {entity_id} not found")
-        return None
+            return self._find_entity(client, entity_id)
 
     def get_history(
         self, entity_id: str, start_time: datetime, end_time: datetime
-    ) -> list[dict]:
+    ) -> list[tuple[datetime, float]]:
         _LOGGER.debug(
-            f"Fetching history for entity {entity_id} from {start_time} to {end_time}"
+            "Fetching history for entity %s from %s to %s", entity_id, start_time, end_time
         )
 
-        entity = self.get_entity(entity_id=entity_id)
-        history = entity.get_history(start_time, end_time)
-        _LOGGER.debug(
-            f"Fetched {len(history.states)} history entries for entity {entity_id}"
-        )
+        # The entity must be used while its client is open: Entity.get_history goes through it
+        with Client(self._http_url, self._token) as client:
+            entity = self._find_entity(client, entity_id)
+            history = entity.get_history(start_time, end_time) if entity else None
 
+        if history is None:
+            _LOGGER.debug("No history for entity %s", entity_id)
+            return []
+
+        _LOGGER.debug(
+            "Fetched %d history entries for entity %s", len(history.states), entity_id
+        )
         values = []
         for state in history.states:
             try:

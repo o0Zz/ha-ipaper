@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ha-ipaper"
-version = "1.0.2"
+version = "1.0.3"
 description = "Home Assistant Interactive e-Paper Dashboard (For Kobo, Kindle, etc...)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,7 +13,7 @@ keywords = ["home-assistant", "epaper", "dashboard"]
 
 dependencies = [
   "PyYAML",
-  "homeassistant_api",
+  "homeassistant-api>=6.1.0",
   "fastapi",
   "uvicorn[standard]",
   "jinja2",
@@ -33,6 +33,7 @@ include = ["ha_ipaper*"]
 [dependency-groups]
 dev = [
     "pytest>=9.2.0",
+    "websockets>=15.0.1",
 ]
 
 [project.scripts]
