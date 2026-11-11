@@ -3,6 +3,7 @@ from collections.abc import Iterator
 from contextlib import contextmanager
 from datetime import datetime
 
+import websockets.sync.client
 from homeassistant_api import Client, Entity, WebsocketClient
 from websockets.exceptions import InvalidStatus
 
@@ -10,9 +11,29 @@ _LOGGER = logging.getLogger(__name__)
 
 SUPERVISOR_URL = "http://supervisor/core"
 
+# The get_states reply holds every entity and exceeds the websockets default limit (1 MiB)
+# on large installations. Same limit as the Supervisor uses for messages from Core.
+MAX_MESSAGE_SIZE = 64 * 1024 * 1024
+
 
 class HomeAssistantConnectionError(Exception):
     """Home Assistant refused the connection; the message tells the user what to check."""
+
+
+class _WebsocketClient(WebsocketClient):
+    """WebsocketClient that accepts messages up to MAX_MESSAGE_SIZE.
+
+    homeassistant_api opens the connection with the websockets default size limit
+    and has no option to change it, so __enter__ is redone with max_size set.
+    """
+
+    def __enter__(self):
+        self._conn = websockets.sync.client.connect(self.api_url, max_size=MAX_MESSAGE_SIZE)
+        self._conn.__enter__()
+        okay = self.authentication_phase()
+        _LOGGER.debug("Authenticated with Home Assistant (%s)", okay.ha_version)
+        self.supported_features_phase()
+        return self
 
 
 class HomeAssistantService:
@@ -28,7 +49,7 @@ class HomeAssistantService:
     @contextmanager
     def _websocket(self) -> Iterator[WebsocketClient]:
         try:
-            with WebsocketClient(self._ws_url, self._token) as client:
+            with _WebsocketClient(self._ws_url, self._token) as client:
                 yield client
         except InvalidStatus as exc:
             status = exc.response.status_code
